@@ -1,5 +1,6 @@
 {
   "name": "my-app",
+  "homepage": "https://NTNU-Bachelor-2026-AIS.github.io/ais-viz-frontend/",
   "private": true,
   "version": "0.0.0",
   "type": "module",
