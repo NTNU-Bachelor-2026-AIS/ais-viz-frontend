@@ -1,14 +1,21 @@
 import { Header } from "@kystverket/styrbord";
-import "./App.css";
+import { LibreMap } from "./Components/LibreMap";
 
+/* root component of the app
+ */
 function App() {
   return (
     <>
-      <Header
-        logo={{
-          url: "/",
-        }}
-      />
+      <>
+        <Header
+          logo={{
+            url: "/",
+          }}
+        />
+      </>
+      <div id="theMap">
+        <LibreMap></LibreMap>
+      </div>
     </>
   );
 }
