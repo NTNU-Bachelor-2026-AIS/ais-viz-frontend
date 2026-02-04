@@ -12,7 +12,7 @@ export const LibreMap = () => {
 
   useEffect(() => {
     if (!containerRef.current) return;
-    const LibreMap = new maplibregl.Map({
+    new maplibregl.Map({
       container: "map", // container id
       style: "https://demotiles.maplibre.org/tiles-mlt/plain.json", // style URL
       center: [0, 0], // starting position [lng, lat]
