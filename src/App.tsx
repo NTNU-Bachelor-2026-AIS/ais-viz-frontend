@@ -16,6 +16,7 @@ function App() {
         setposts(response.data);
       } catch (error) {}
     };
+    post;
     data();
   }, []);
 
