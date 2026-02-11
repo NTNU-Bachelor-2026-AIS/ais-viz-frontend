@@ -21,7 +21,7 @@ export const LibreMap = () => {
     });
 
     map.on("load", () => {
-      map.setLayoutProperty("label_country", "text-field", [
+      map.setLayoutProperty("layer_city", "text-field", [
         "format",
         ["get", "name_en"],
         { "font-scale": 1.2 },
@@ -30,14 +30,9 @@ export const LibreMap = () => {
         ["get", "name"],
         {
           "font-scale": 0.8,
-          "text-font": ["literal", ["Comic Sans MS"]],
+          "text-font": ["literal", ["Museo sans"]],
         },
       ]);
-      map.setLayerZoomRange("label_state", 1, 24);
-      map.setLayerZoomRange("label_city", 1, 24);
-      map.setLayerZoomRange("label_town", 1, 24);
-      map.setLayerZoomRange("label_village", 1, 24);
-      map.setLayerZoomRange("label_other", 1, 24);
 
       map.addSource("vertical_line", {
         type: "geojson",
