@@ -2,12 +2,18 @@ import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useRef } from "react";
 import style from "../CSS/LibreMap.module.css";
+import type { FeatureCollection } from "geojson";
 
 /* 
 Function component that creates a libremap instance from libremap open source project, is not finished as not going to have style inside
 code outside of useffect and useref is from mapLibre.
 */
-export const LibreMap = () => {
+
+interface MapProps {
+  responseData: FeatureCollection;
+}
+
+export const LibreMap = ({ responseData }: MapProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -62,6 +68,14 @@ export const LibreMap = () => {
         },
       });
 
+      map.addSource("anomalies", {
+        type: "geojson",
+        data: responseData,
+        cluster: true,
+        clusterMaxZoom: 14,
+        clusterRadius: 50,
+      });
+
       map.addSource("horizontal_line", {
         type: "geojson",
         data: {
@@ -70,12 +84,23 @@ export const LibreMap = () => {
           geometry: {
             type: "LineString",
             coordinates: [
-              [1000, 0], // south end
+              [1000, 0],
               [-1000, 0],
             ],
           },
         },
       });
+
+      map.addLayer({
+        id: "anomalies-layer",
+        type: "circle",
+        source: "anomalies",
+        paint: {
+          "circle-radius": 6,
+          "circle-color": "#FF0000",
+        },
+      });
+
       map.addLayer({
         id: "horizontal_line",
         type: "line",
@@ -90,7 +115,7 @@ export const LibreMap = () => {
         },
       });
     });
-  }, []);
+  }, [responseData]);
 
   return <div ref={containerRef} id="map" className={style.LibreMap}></div>;
 };
