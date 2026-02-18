@@ -1,5 +1,7 @@
 import { Header } from "@kystverket/styrbord";
 import "./App.css";
+import SideBar from "./components/sidebar/SideBar";
+import ShipInfo from "./components/shipinfo/ShipInfo";
 
 function App() {
   return (
@@ -10,6 +12,15 @@ function App() {
             url: "/",
           }}
         />
+        <main className="content-area">
+        {/* Map Component */}
+        
+        {/* Floating components */}
+        <ShipInfo />
+        
+        {/* SideBar */}
+        <SideBar />
+      </main>
     </>
   );
 }

@@ -4,7 +4,6 @@
   --color-primary-tinted: #e3f2fd; /* Lightest blue */
   --color-primary-active: #c6e2f4; /* Card background */
   --color-info-active: #bacce1;   /* Hover states/Accents */
-  --font-main: 'Raleway', sans-serif;
 }
 /* Made with a small amount of help from AI */
 .ship-card {
@@ -19,7 +18,6 @@
   display: flex;
   flex-direction: column;
   overflow: hidden; /* Keeps image inside the card */
-  font-family: var(--font-main);
   border: 1px solid rgba(0, 0, 0, 0.05);
   
   /* Positioning to make sure it seems like it floats above the map. */
@@ -86,7 +84,6 @@
   padding: 12px;
   color: white;
   background-color: var(--color-navy); /* Darker professional color */
-  font-family: var(--font-main);
   cursor: pointer;
   width: 100%;
   font-weight: 600;
