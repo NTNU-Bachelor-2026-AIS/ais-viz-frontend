@@ -3,6 +3,8 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useRef } from "react";
 import style from "../CSS/LibreMap.module.css";
 import type { FeatureCollection } from "geojson";
+import { MapboxOverlay } from "@deck.gl/mapbox";
+import { iconLayer, heatMapLayer } from "./DeckLayers";
 
 /* 
 Function component that creates a libremap instance from libremap open source project, is not finished as not going to have style inside
@@ -15,106 +17,38 @@ interface MapProps {
 
 export const LibreMap = ({ responseData }: MapProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<maplibregl.Map>(null);
+  const deckOverlayRef = useRef<MapboxOverlay>(null);
 
   useEffect(() => {
-    if (!containerRef.current) return;
-    const map = new maplibregl.Map({
+    if (mapRef.current) return;
+    mapRef.current = new maplibregl.Map({
       container: "map", // container id
       style: "https://tiles.openfreemap.org/styles/bright", // style URL
       center: [0, 0], // starting position [lng, lat]
       zoom: 1, // starting zoom
       renderWorldCopies: false,
     });
+  }, []);
 
-    map.on("load", () => {
-      map.setLayoutProperty("layer_city", "text-field", [
-        "format",
-        ["get", "name_en"],
-        { "font-scale": 1.2 },
-        "\n",
-        {},
-        ["get", "name"],
-        {
-          "font-scale": 0.8,
-          "text-font": ["literal", ["Museo sans"]],
-        },
-      ]);
-
-      map.addSource("vertical_line", {
-        type: "geojson",
-        data: {
-          type: "Feature",
-          properties: {},
-          geometry: {
-            type: "LineString",
-            coordinates: [
-              [0, -10000], // south end
-              [0, 10000],
-            ],
-          },
-        },
-      });
-      map.addLayer({
-        id: "vertical_line",
-        type: "line",
-        source: "vertical_line",
-        layout: {
-          "line-join": "round",
-          "line-cap": "round",
-        },
-        paint: {
-          "line-color": "#333232",
-          "line-width": 1,
-        },
+  useEffect(() => {
+    if (!mapRef.current) return;
+    mapRef.current.on("load", () => {
+      deckOverlayRef.current = new MapboxOverlay({
+        interleaved: false,
+        layers: [heatMapLayer({ responseData })],
       });
 
-      map.addSource("anomalies", {
-        type: "geojson",
-        data: responseData,
-        cluster: true,
-        clusterMaxZoom: 14,
-        clusterRadius: 50,
-      });
-
-      map.addSource("horizontal_line", {
-        type: "geojson",
-        data: {
-          type: "Feature",
-          properties: {},
-          geometry: {
-            type: "LineString",
-            coordinates: [
-              [1000, 0],
-              [-1000, 0],
-            ],
-          },
-        },
-      });
-
-      map.addLayer({
-        id: "anomalies-layer",
-        type: "circle",
-        source: "anomalies",
-        paint: {
-          "circle-radius": 6,
-          "circle-color": "#FF0000",
-        },
-      });
-
-      map.addLayer({
-        id: "horizontal_line",
-        type: "line",
-        source: "horizontal_line",
-        layout: {
-          "line-join": "round",
-          "line-cap": "round",
-        },
-        paint: {
-          "line-color": "#333232",
-          "line-width": 1,
-        },
-      });
+      if (mapRef.current) {
+        mapRef.current.addControl(deckOverlayRef.current);
+      }
     });
+  }, []);
+
+  useEffect(() => {
+    if (deckOverlayRef.current) {
+      deckOverlayRef.current.heatMapLayer({ responseData });
+    }
   }, [responseData]);
 
   return <div ref={containerRef} id="map" className={style.LibreMap}></div>;
