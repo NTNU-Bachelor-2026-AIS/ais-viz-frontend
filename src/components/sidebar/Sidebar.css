@@ -1,0 +1,59 @@
+.boat-sidebar {
+  width: 400px;
+  height: 100%;
+  background-color: var(--color-primary-tinted);
+  border-left: 2px solid var(--color-info-active);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 10;
+}
+
+.search-container {
+  padding: 20px;
+  background-color: white;
+  border-bottom: 1px solid var(--color-info-active);
+}
+
+.sidebar-search {
+  width: 100%;
+  padding: 12px;
+  border-radius: 20px;
+  border: 1px solid var(--color-info-active);
+  font-family: var(--font-main);
+  outline: none;
+}
+
+.list-container {
+  flex: 1;
+  overflow-y: auto; /* Makes sure its Scrollable */
+}
+
+.boat-item {
+  padding: 15px 20px;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  border-top: 1px solid rgba(0,0,0,0.05);
+  cursor: pointer;
+  transition: background 0.1s;
+  white-space: nowrap;
+}
+
+.boat-item:hover {
+  background-color: var(--color-primary-active);
+}
+
+.boat-id, .boat-mmsi {
+  font-size: 1 rem;
+  font-weight: 400;
+  color: var(--color-navy);
+}
+
+.list-container::-webkit-scrollbar {
+  width: 6px;
+}
+.list-container::-webkit-scrollbar-thumb {
+  background-color: var(--color-info-active);
+  border-radius: 10px;
+}

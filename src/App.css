@@ -8,6 +8,11 @@
 
 :root {
   --font-main: 'Raleway', sans-serif;
+  /* Colors from Kystverket */
+  --color-navy: #00004d;
+  --color-primary-tinted: #e3f2fd; /* Lightest blue */
+  --color-primary-active: #c6e2f4; /* Card background */
+  --color-info-active: #bacce1;   /* Hover states/Accents */
 }
 
 /* Force Override Kystverket because of licensing issues */

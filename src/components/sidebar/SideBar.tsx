@@ -11,6 +11,20 @@ const SideBar: React.FC = () => {
     { id: '20506', mmsi: '9223344', name: 'Coastal Guard' },
     { id: '20507', mmsi: '9556677', name: 'North Queen' },
     { id: '20508', mmsi: '9667788', name: 'Ocean Link' },
+    { id: '20502', mmsi: '9344851', name: 'Arctic Ocean' },
+    { id: '20503', mmsi: '9123456', name: 'Nordic Star' },
+    { id: '20504', mmsi: '9876543', name: 'Baltic Trans' },
+    { id: '20505', mmsi: '9445566', name: 'Sea Voyager' },
+    { id: '20506', mmsi: '9223344', name: 'Coastal Guard' },
+    { id: '20507', mmsi: '9556677', name: 'North Queen' },
+    { id: '20508', mmsi: '9667788', name: 'Ocean Link' },
+    { id: '20502', mmsi: '9344851', name: 'Arctic Ocean' },
+    { id: '20503', mmsi: '9123456', name: 'Nordic Star' },
+    { id: '20504', mmsi: '9876543', name: 'Baltic Trans' },
+    { id: '20505', mmsi: '9445566', name: 'Sea Voyager' },
+    { id: '20506', mmsi: '9223344', name: 'Coastal Guard' },
+    { id: '20507', mmsi: '9556677', name: 'North Queen' },
+    { id: '20508', mmsi: '9667788', name: 'Ocean Link' },
   ];
   return(
         <aside className="boat-sidebar">
