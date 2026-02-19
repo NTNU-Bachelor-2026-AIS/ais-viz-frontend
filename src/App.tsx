@@ -5,23 +5,29 @@ import ShipInfo from "./Components/ShipInfo/ShipInfo";
 import { LibreMap } from "./Components/LibreMap";
 import api from "./api/posts";
 import { useEffect, useState } from "react";
+import type { FeatureCollection } from "geojson";
 
 /* root component of the app
  */
 function App() {
-  const [post, setposts] = useState([]);
+  const [posts, setposts] = useState<FeatureCollection>({
+    type: "featureCollection",
+    features: [],
+  });
 
   useEffect(() => {
     const data = async () => {
       try {
         const response = await api.get("/anomaly-groups");
-        console.log(response);
         setposts(response.data);
       } catch (error) {}
     };
-    post;
     data();
   }, []);
+
+  useEffect(() => {
+    console.log("here is updated posts", posts);
+  }, [posts]);
 
   return (
     <>
@@ -32,7 +38,7 @@ function App() {
         />
         <main className="content-area">
         {/* Map Component */}
-        <LibreMap></LibreMap>
+        <LibreMap responseData={posts}></LibreMap>
         {/* Floating components */}
         <ShipInfo />
         
