@@ -2,7 +2,7 @@ import { Header } from "@kystverket/styrbord";
 import "./App.css";
 import SideBar from "./components/sidebar/SideBar";
 import ShipInfo from "./components/shipinfo/ShipInfo";
-import { LibreMap } from "./Components/LibreMap";
+import { LibreMap } from "./components/LibreMap";
 import api from "./api/posts";
 import { useEffect, useState } from "react";
 
