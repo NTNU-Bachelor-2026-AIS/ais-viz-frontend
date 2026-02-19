@@ -1,11 +1,11 @@
-import { ScatterplotLayer } from "@deck.gl/layers";
+import { ScatterplotLayer } from "@deck.gl/layers/typed";
 import type { FeatureCollection } from "geojson";
 import type { Point } from "geojson";
 import React from "react";
-import { DeckGL } from "@deck.gl/react";
-import { IconLayer } from "@deck.gl/layers";
-import type { PickingInfo } from "@deck.gl/core";
-import { HeatmapLayer } from "deck.gl";
+import { DeckGL } from "@deck.gl/react/typed";
+import { IconLayer } from "@deck.gl/layers/typed";
+import type { PickingInfo } from "@deck.gl/core/typed";
+import { HeatmapLayer } from "deck.gl/typed";
 
 type boat = {
   ShipName: string;
