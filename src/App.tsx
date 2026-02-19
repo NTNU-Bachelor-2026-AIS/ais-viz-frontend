@@ -11,7 +11,7 @@ import type { FeatureCollection } from "geojson";
  */
 function App() {
   const [posts, setposts] = useState<FeatureCollection>({
-    type: "featureCollection",
+    type: "FeatureCollection",
     features: [],
   });
 

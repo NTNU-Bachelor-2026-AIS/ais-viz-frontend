@@ -1,10 +1,10 @@
-import { ScatterplotLayer } from "@deck.gl/layers/typed";
+// import { ScatterplotLayer } from "@deck.gl/layers/typed";
 import type { FeatureCollection } from "geojson";
-import type { Point } from "geojson";
-import React from "react";
-import { DeckGL } from "@deck.gl/react/typed";
+// import type { Point } from "geojson";
+// import React from "react";
+// import { DeckGL } from "@deck.gl/react/typed";
 import { IconLayer } from "@deck.gl/layers/typed";
-import type { PickingInfo } from "@deck.gl/core/typed";
+// import type { PickingInfo } from "@deck.gl/core/typed";
 import { HeatmapLayer } from "deck.gl/typed";
 
 type boat = {
@@ -23,7 +23,7 @@ export const iconLayer = ({ responseData }: boatData) => {
     id: "IconLayer",
     data: responseData.features,
     getColor: (d: any) => [Math.sqrt(d.exits), 140, 0],
-    getIcon: (d: any) => "marker",
+    getIcon: () => "marker",
     getPosition: (d: any) => d.geometry.coordinates,
     getSize: 40,
     iconAtlas:
@@ -41,7 +41,7 @@ export const heatMapLayer = ({ responseData }: boatData) => {
     data: responseData.features,
     aggregation: "SUM",
     getPosition: (d: any) => d.geometry.coordinates,
-    getWeight: (d: any) => 1,
+    getWeight: () => 1,
     radiusPixels: 25,
   });
   return layer;

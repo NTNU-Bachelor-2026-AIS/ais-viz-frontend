@@ -4,8 +4,8 @@ import { useEffect, useRef } from "react";
 import style from "../CSS/LibreMap.module.css";
 import type { FeatureCollection } from "geojson";
 import { MapboxOverlay } from "@deck.gl/mapbox/typed";
-import { iconLayer, heatMapLayer } from "./DeckLayers";
-import { Layer } from "react-map-gl/mapbox";
+import { /**iconLayer,*/ heatMapLayer } from "./DeckLayers";
+// import { Layer } from "react-map-gl/mapbox";
 
 /* 
 Function component that creates a libremap instance from libremap open source project, is not finished as not going to have style inside
@@ -43,7 +43,7 @@ export const LibreMap = ({ responseData }: MapProps) => {
       });
 
       if (mapRef.current) {
-        mapRef.current.addControl(deckOverlayRef.current);
+        (mapRef.current.addControl as any)(deckOverlayRef.current);
       }
     });
   }, []);
