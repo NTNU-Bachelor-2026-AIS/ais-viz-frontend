@@ -1,4 +1,7 @@
 import { Header } from "@kystverket/styrbord";
+import "./App.css";
+import SideBar from "./Components/SideBar/SideBar";
+import ShipInfo from "./Components/ShipInfo/ShipInfo";
 import { LibreMap } from "./Components/LibreMap";
 import api from "./api/posts";
 import { useEffect, useState } from "react";
@@ -28,16 +31,20 @@ function App() {
 
   return (
     <>
-      <>
         <Header
           logo={{
             url: "/",
           }}
         />
-      </>
-      <div>
+        <main className="content-area">
+        {/* Map Component */}
         <LibreMap responseData={posts}></LibreMap>
-      </div>
+        {/* Floating components */}
+        <ShipInfo />
+        
+        {/* SideBar */}
+        <SideBar />
+      </main>
     </>
   );
 }
