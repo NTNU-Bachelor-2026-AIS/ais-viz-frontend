@@ -31,19 +31,19 @@ function App() {
 
   return (
     <>
-        <Header
-          logo={{
-            url: "/",
-          }}
-        />
-        <main className="content-area">
+      <Header
+        logo={{
+          url: "/",
+        }}
+      />
+      <main className="content-area">
         {/* Map Component */}
         <LibreMap responseData={posts}></LibreMap>
         {/* Floating components */}
-        <ShipInfo />
-        
+        {/*<ShipInfo />*/}
+
         {/* SideBar */}
-        <SideBar />
+        {/*<SideBar />*/}
       </main>
     </>
   );
