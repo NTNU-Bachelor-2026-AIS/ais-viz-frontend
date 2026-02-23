@@ -5,7 +5,8 @@ import style from "../CSS/LibreMap.module.css";
 import type { FeatureCollection } from "geojson";
 import { MapboxOverlay } from "@deck.gl/mapbox/typed";
 import { iconLayer, heatMapLayer } from "./DeckLayers";
-import { Layer } from "react-map-gl/mapbox";
+import { useState } from "react";
+//import { Layer } from "react-map-gl/mapbox";
 
 /* 
 Function component that creates a libremap instance from libremap open source project, is not finished as not going to have style inside
@@ -20,7 +21,7 @@ export const LibreMap = ({ responseData }: MapProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map>(null);
   const deckOverlayRef = useRef<MapboxOverlay>(null);
-  let overlayCheck: boolean = false;
+  const [overLayReady, setOverLayReady] = useState<boolean>(false);
 
   useEffect(() => {
     if (mapRef.current) return;
@@ -31,7 +32,6 @@ export const LibreMap = ({ responseData }: MapProps) => {
       zoom: 1, // starting zoom
       renderWorldCopies: false,
     });
-    overlayCheck = true;
   }, []);
 
   useEffect(() => {
@@ -41,21 +41,19 @@ export const LibreMap = ({ responseData }: MapProps) => {
         interleaved: false,
         layers: [heatMapLayer({ responseData })],
       });
-
       if (mapRef.current) {
-        mapRef.current.addControl(deckOverlayRef.current);
+        (mapRef.current.addControl as any)(deckOverlayRef.current);
+        setOverLayReady(true);
       }
     });
   }, []);
 
   useEffect(() => {
-    if (deckOverlayRef.current) {
-      console.log("this should work but doesnt why");
-      deckOverlayRef.current.setProps({
-        layers: [heatMapLayer({ responseData })],
-      });
-    }
-  }, [responseData, overlayCheck]);
+    if (!deckOverlayRef.current) return;
+    deckOverlayRef.current.setProps({
+      layers: [iconLayer({ responseData })],
+    });
+  }, [responseData, overLayReady]);
 
   return <div ref={containerRef} id="map" className={style.LibreMap}></div>;
 };
