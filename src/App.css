@@ -13,6 +13,11 @@
   --color-primary-tinted: #e3f2fd; /* Lightest blue */
   --color-primary-active: #c6e2f4; /* Card background */
   --color-info-active: #bacce1;   /* Hover states/Accents */
+  --color-info-tinted: #E5F9FF;
+  --color-info-hover: #C4DDF0;
+  --color-info: #EDF5FA;
+  --color-neutral: #F3F3F4;
+  --color-neutral-tinted: #e8e8eA;
 }
 
 /* Force Override Kystverket because of licensing issues */
