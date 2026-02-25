@@ -1,4 +1,3 @@
-import React from 'react';
 import { Settings, Calendar, Filter } from 'lucide-react';
 import './SettingsBar.css';
 
