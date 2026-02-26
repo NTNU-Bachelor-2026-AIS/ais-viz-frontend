@@ -35,6 +35,11 @@
   transform: translateY(-2px);
 }
 
+.click-button:active {
+    color: var(--color-primary-tinted);
+    transform: translateY(0);
+}
+
 .icon-wrapper {
   background-color: var(--color-info-hover);
   border-radius: 50%;
