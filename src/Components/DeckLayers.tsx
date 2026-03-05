@@ -29,7 +29,7 @@ export const iconLayer = ({ responseData }: boatData) => {
     data: responseData.features,
     getColor: (d: any) => [Math.sqrt(d.exits), 140, 0],
     getIcon: (d: any) => "marker",
-    getPosition: (d: any) => returnArrayOfCoords(d),
+    getPosition: (d: any) => d.geometry.coordinates,
     getSize: 40,
     iconAtlas:
       "https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png",
@@ -45,7 +45,7 @@ export const heatMapLayer = ({ responseData }: boatData) => {
     id: "HeatmapLayer",
     data: responseData.features,
     aggregation: "SUM",
-    getPosition: (d: any) => returnArrayOfCoords(d),
+    getPosition: (d: any) => d.geometry.coordinates,
     getWeight: (d: any) => 1,
     radiusPixels: 40,
   });
@@ -53,7 +53,8 @@ export const heatMapLayer = ({ responseData }: boatData) => {
 };
 
 /*
-helper function that returns array of coordinates for a feature with jitter, since we will have multiple different layers that have same jitter. 
+helper function that returns array of coordinates for a feature with jitter, since we will have multiple different layers that have same jitter.
+Deprecated after we now have a seed function from backend that creates points that are spaced.  
 */
 const returnArrayOfCoords = (d: Feature<Point>) => {
   const coords: [number, number] = [0, 0];
