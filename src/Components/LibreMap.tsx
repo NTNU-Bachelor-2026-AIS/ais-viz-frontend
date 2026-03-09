@@ -8,7 +8,10 @@ import { MapboxOverlay } from "@deck.gl/mapbox/typed";
 import { iconLayer, heatMapLayer } from "./DeckLayers";
 import { useState } from "react";
 import Supercluster, { type AnyProps, type PointFeature } from "supercluster";
-import { clusteredIconLayer } from "./ClusteredLayers";
+import {
+  clusteredIconLayer,
+  LabeledclusteredScatterPlotLayer,
+} from "./ClusteredLayers";
 import { DeprecatedDetails } from "@kystverket/styrbord";
 import cluster from "cluster";
 //import { Layer } from "react-map-gl/mapbox";
@@ -90,7 +93,7 @@ export const LibreMap = ({ responseData }: MapProps) => {
     if (!mapRef.current || !clusterRef.current) return;
     let clusters = clusterRef.current.getClusters(bounds, zoom);
     deckOverlayRef.current?.setProps({
-      layers: [clusteredIconLayer({ clusters })],
+      layers: [LabeledclusteredScatterPlotLayer({ clusters })],
     });
   }, [bounds, zoom]);
 
