@@ -4,7 +4,7 @@ import type { Point } from "geojson";
 import React from "react";
 import { DeckGL } from "@deck.gl/react/typed";
 import { IconLayer } from "@deck.gl/layers/typed";
-import type { PickingInfo } from "@deck.gl/core/typed";
+// import type { PickingInfo } from "@deck.gl/core/typed";
 import { HeatmapLayer } from "deck.gl/typed";
 import { feature, featureCollection } from "@turf/turf";
 import type { isAnyArrayBuffer } from "node:util/types";
@@ -28,7 +28,7 @@ export const iconLayer = ({ responseData }: boatData) => {
     id: "IconLayer",
     data: responseData.features,
     getColor: (d: any) => [Math.sqrt(d.exits), 140, 0],
-    getIcon: (d: any) => "marker",
+    getIcon: () => "marker",
     getPosition: (d: any) => d.geometry.coordinates,
     getSize: 40,
     iconAtlas:
