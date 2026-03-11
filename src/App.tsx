@@ -6,6 +6,7 @@ import { LibreMap } from "./Components/LibreMap";
 import api from "./api/posts";
 import { useEffect, useState } from "react";
 import type { FeatureCollection, Point } from "geojson";
+import SettingsBar from "./Components/SettingsBar/SettingsBar";
 
 /* root component of the app
  */
@@ -40,8 +41,9 @@ function App() {
         {/* Map Component */}
         <LibreMap responseData={posts}></LibreMap>
         {/* Floating components */}
-        {/*<ShipInfo />*/}
-
+        <ShipInfo />
+        <SettingsBar />
+        
         {/* SideBar */}
         {/*<SideBar />*/}
       </main>
