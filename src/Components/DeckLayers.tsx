@@ -1,11 +1,13 @@
 import { ScatterplotLayer } from "@deck.gl/layers/typed";
-import type { FeatureCollection } from "geojson";
+import type { Feature, FeatureCollection, Geometry } from "geojson";
 import type { Point } from "geojson";
 import React from "react";
 import { DeckGL } from "@deck.gl/react/typed";
 import { IconLayer } from "@deck.gl/layers/typed";
 import type { PickingInfo } from "@deck.gl/core/typed";
 import { HeatmapLayer } from "deck.gl/typed";
+import { feature, featureCollection } from "@turf/turf";
+import type { isAnyArrayBuffer } from "node:util/types";
 
 type boat = {
   ShipName: string;
@@ -15,8 +17,11 @@ type boat = {
 };
 
 interface boatData {
-  responseData: FeatureCollection;
+  responseData: FeatureCollection<Point>;
 }
+
+const jitterx = () => Math.random() * 3;
+const jittery = () => Math.random() * 2;
 
 export const iconLayer = ({ responseData }: boatData) => {
   const layer = new IconLayer<boat>({
@@ -42,7 +47,22 @@ export const heatMapLayer = ({ responseData }: boatData) => {
     aggregation: "SUM",
     getPosition: (d: any) => d.geometry.coordinates,
     getWeight: (d: any) => 1,
-    radiusPixels: 25,
+    radiusPixels: 40,
   });
   return layer;
+};
+
+/*
+helper function that returns array of coordinates for a feature with jitter, since we will have multiple different layers that have same jitter.
+Deprecated after we now have a seed function from backend that creates points that are spaced.  
+*/
+const returnArrayOfCoords = (d: Feature<Point>) => {
+  const coords: [number, number] = [0, 0];
+
+  const x = (d.geometry.coordinates[0] += jitterx());
+  const y = (d.geometry.coordinates[1] += jittery());
+  coords[0] = x;
+  coords[1] = y;
+
+  return coords;
 };
