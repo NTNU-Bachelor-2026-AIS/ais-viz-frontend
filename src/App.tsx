@@ -7,6 +7,7 @@ import api from "./api/posts";
 import { useEffect, useState } from "react";
 import type { FeatureCollection, Point } from "geojson";
 import SettingsBar from "./Components/SettingsBar/SettingsBar";
+import { MapControls } from "./Components/MapControls/MapControls";
 
 /* root component of the app
  */
@@ -15,6 +16,7 @@ function App() {
     type: "FeatureCollection",
     features: [],
   });
+  const [activeVis, setActiveVis] = useState<VisType>("clustering");
 
   useEffect(() => {
     const data = async () => {
@@ -39,8 +41,12 @@ function App() {
         />
         <main className="content-area">
         {/* Map Component */}
-        <LibreMap responseData={posts}></LibreMap>
+        <LibreMap responseData={posts} activeVis={activeVis}></LibreMap>
         {/* Floating components */}
+        <MapControls 
+          activeLayer={activeVis} 
+          setActiveLayer={setActiveVis} 
+        />
         <ShipInfo />
         <SettingsBar />
         
