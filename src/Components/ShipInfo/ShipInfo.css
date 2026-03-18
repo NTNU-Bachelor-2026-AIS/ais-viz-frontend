@@ -17,6 +17,7 @@
   position: absolute;
   left: 20px;
   top: 100px;
+  z-index: 9999;
 }
 
 .card-image-wrapper {

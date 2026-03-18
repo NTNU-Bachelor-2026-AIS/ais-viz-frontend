@@ -49,6 +49,7 @@ export const heatMapLayer = ({ responseData }: boatData) => {
     getWeight: (d: any) => 1,
     radiusPixels: 40,
   });
+  console.log(responseData.features);
   return layer;
 };
 
@@ -57,6 +58,7 @@ helper function that returns array of coordinates for a feature with jitter, sin
 Deprecated after we now have a seed function from backend that creates points that are spaced.  
 */
 const returnArrayOfCoords = (d: Feature<Point>) => {
+  if (!d?.geometry?.coordinates) return [0, 0];
   const coords: [number, number] = [0, 0];
 
   const x = (d.geometry.coordinates[0] += jitterx());
