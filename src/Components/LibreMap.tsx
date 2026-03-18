@@ -19,6 +19,10 @@ import ShipInfo from "./ShipInfo/ShipInfo";
 import { shipInfoContext } from "./ShipInfo/ShipInfoContext";
 
 //import { Layer } from "react-map-gl/mapbox";
+import { useMemo } from 'react';
+
+// Used to allow MapControls to use the values
+export type VisType = "clustering" | "heatmap"
 
 /* 
 Function component that creates a libremap instance from libremap open source project, is not finished as not going to have style inside
@@ -27,21 +31,48 @@ code outside of useffect and useref is from mapLibre.
 
 interface MapProps {
   responseData: FeatureCollection<Point>;
+  activeVis: VisType;
 }
 
-export const LibreMap = ({ responseData }: MapProps) => {
+export const LibreMap = ({ responseData, activeVis }: MapProps) => {
   const shipInfoContextValue = useContext(shipInfoContext);
-
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map>(null);
   const deckOverlayRef = useRef<MapboxOverlay>(null);
+  const clusterRef = useRef<Supercluster>(new Supercluster({
+    radius: 40,
+    extent: 256,
+    maxZoom: 19,
+  }));
+
   const [overLayReady, setOverLayReady] = useState<boolean>(false);
   const [bounds, setBounds] = useState<[number, number, number, number]>([
     0, 0, 0, 0,
   ]);
   const [zoom, setZoom] = useState<number>(0);
-  const clusterRef = useRef<Supercluster>(null);
 
+  const layers = useMemo(() => {
+    if (!overLayReady || !clusterRef.current) return [];
+
+    if (activeVis === "heatmap") {
+        return [heatMapLayer({ responseData })];
+    }
+
+    // I used AI as a tool here to help create this code
+    if (activeVis === "clustering") {
+      const currentClusters = clusterRef.current.getClusters(bounds, Math.floor(zoom));
+      return LabeledclusteredScatterPlotLayer({ clusters: currentClusters });
+    }
+    return [];
+  }, [activeVis, responseData, bounds, zoom]);
+
+  useEffect(() => {
+    if (overLayReady) {
+      deckOverlayRef.current?.setProps({ layers }) 
+    }
+  }, [layers, overLayReady])
+
+  // Initialize Map
   useEffect(() => {
     if (mapRef.current) return;
     mapRef.current = new maplibregl.Map({
@@ -53,6 +84,7 @@ export const LibreMap = ({ responseData }: MapProps) => {
     });
   }, []);
 
+  // Setup Deck.gl Overlay
   useEffect(() => {
     if (!mapRef.current) return;
     mapRef.current.on("load", () => {
@@ -69,12 +101,9 @@ export const LibreMap = ({ responseData }: MapProps) => {
 
   //useeffect for setting up the supercluster.
   useEffect(() => {
-    clusterRef.current = new Supercluster({
-      log: true,
-      radius: 40,
-      extent: 256,
-      maxZoom: 19,
-    }).load(responseData.features as any);
+    clusterRef.current.load(responseData.features as any);
+    // Force Re calculation was made with help from AI
+    setZoom(z => z + 0.000001);
   }, [responseData]);
 
   //kind of sloppy useeffecct to look for change in zoom and bounds after a move. think about refactoring later
@@ -95,6 +124,7 @@ export const LibreMap = ({ responseData }: MapProps) => {
   }, []);
 
   //useeffect that logs when zoom and boundary changes, for testing, will then update clustering after or iconlayer ?
+  /** 
   useEffect(() => {
     if (!mapRef.current || !clusterRef.current) return;
     let clusters = clusterRef.current.getClusters(bounds, zoom);
@@ -107,6 +137,7 @@ export const LibreMap = ({ responseData }: MapProps) => {
       ],
     });
   }, [bounds, zoom]);
+  */
 
   return (
     <>
