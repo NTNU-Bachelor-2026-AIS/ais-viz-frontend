@@ -1,16 +1,21 @@
 import { Header } from "@kystverket/styrbord";
 import "./App.css";
 import SideBar from "./Components/SideBar/SideBar";
-import ShipInfo from "./Components/ShipInfo/ShipInfo";
+import ShipInfo, { type ShipInfoProps } from "./Components/ShipInfo/ShipInfo";
 import { LibreMap } from "./Components/LibreMap";
 import api from "./api/posts";
 import { useEffect, useState } from "react";
 import type { FeatureCollection, Point } from "geojson";
 import SettingsBar from "./Components/SettingsBar/SettingsBar";
+import { shipInfoContext } from "./Components/ShipInfo/ShipInfoContext";
 
 /* root component of the app
  */
 function App() {
+  const [shipInfoProps, setShipInfoProps] = useState<ShipInfoProps | undefined>(
+    undefined,
+  );
+
   const [posts, setposts] = useState<FeatureCollection<Point>>({
     type: "FeatureCollection",
     features: [],
@@ -21,7 +26,9 @@ function App() {
       try {
         const response = await api.get("/anomaly-groups");
         setposts(response.data);
-      } catch (error) {}
+      } catch (error) {
+        console.log(error + " an error occured");
+      }
     };
     data();
   }, []);
@@ -32,18 +39,18 @@ function App() {
 
   return (
     <>
-        <Header
-          logo={{
-            url: "/",
-          }}
-        />
-        <main className="content-area">
+      <Header
+        logo={{
+          url: "/",
+        }}
+      />
+      <main className="content-area">
         {/* Map Component */}
-        <LibreMap responseData={posts}></LibreMap>
-        {/* Floating components */}
-        <ShipInfo />
-        <SettingsBar />
-        
+        <shipInfoContext.Provider value={{ shipInfoProps, setShipInfoProps }}>
+          <LibreMap responseData={posts}></LibreMap>
+          {/* Floating components */}
+          <ShipInfo />;{/* <SettingsBar />*/}
+        </shipInfoContext.Provider>
         {/* SideBar */}
         {/*<SideBar />*/}
       </main>

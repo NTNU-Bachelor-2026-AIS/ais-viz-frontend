@@ -1,6 +1,6 @@
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { useEffect, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import style from "../CSS/LibreMap.module.css";
 import type { Point } from "geojson";
 import type { FeatureCollection } from "geojson";
@@ -14,6 +14,10 @@ import {
 } from "./ClusteredLayers";
 import { DeprecatedDetails } from "@kystverket/styrbord";
 import cluster from "cluster";
+import type { ShipInfoProps } from "./ShipInfo/ShipInfo";
+import ShipInfo from "./ShipInfo/ShipInfo";
+import { shipInfoContext } from "./ShipInfo/ShipInfoContext";
+
 //import { Layer } from "react-map-gl/mapbox";
 
 /* 
@@ -26,6 +30,8 @@ interface MapProps {
 }
 
 export const LibreMap = ({ responseData }: MapProps) => {
+  const shipInfoContextValue = useContext(shipInfoContext);
+
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map>(null);
   const deckOverlayRef = useRef<MapboxOverlay>(null);
@@ -93,9 +99,18 @@ export const LibreMap = ({ responseData }: MapProps) => {
     if (!mapRef.current || !clusterRef.current) return;
     let clusters = clusterRef.current.getClusters(bounds, zoom);
     deckOverlayRef.current?.setProps({
-      layers: [LabeledclusteredScatterPlotLayer({ clusters })],
+      layers: [
+        LabeledclusteredScatterPlotLayer(
+          { clusters },
+          shipInfoContextValue?.setShipInfoProps,
+        ),
+      ],
     });
   }, [bounds, zoom]);
 
-  return <div ref={containerRef} id="map" className={style.LibreMap}></div>;
+  return (
+    <>
+      <div ref={containerRef} id="map" className={style.LibreMap}></div>
+    </>
+  );
 };
