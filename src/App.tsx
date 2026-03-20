@@ -21,6 +21,8 @@ function App() {
     features: [],
   });
 
+  const shipInfoContextValue = { shipInfoProps, setShipInfoProps };
+
   useEffect(() => {
     const data = async () => {
       try {
@@ -47,10 +49,14 @@ function App() {
       <main className="content-area">
         {/* Map Component */}
         <shipInfoContext.Provider value={{ shipInfoProps, setShipInfoProps }}>
-          <LibreMap responseData={posts}></LibreMap>
+          <LibreMap
+            responseData={posts}
+            shipInfoContextValue={shipInfoContextValue}
+          ></LibreMap>
           {/* Floating components */}
-          <ShipInfo />;{/* <SettingsBar />*/}
+          <ShipInfo />
         </shipInfoContext.Provider>
+        {/* <SettingsBar />*/}
         {/* SideBar */}
         {/*<SideBar />*/}
       </main>

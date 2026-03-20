@@ -23,6 +23,7 @@ import Supercluster, {
   type PointFeature,
 } from "supercluster";
 import type { ShipInfoProps } from "./ShipInfo/ShipInfo";
+import { setShipInfoOnClick } from "../utils/MapInteractionUtils";
 
 type boat = {
   ShipName: string;
@@ -35,7 +36,10 @@ interface clusteredBoatData {
   clusters: (ClusterFeature<AnyProps> | PointFeature<AnyProps>)[];
 }
 
-export const clusteredIconLayer = ({ clusters }: clusteredBoatData) => {
+export const clusteredIconLayer = (
+  { clusters }: clusteredBoatData,
+  setShipInfo?: Dispatch<SetStateAction<ShipInfoProps | undefined>>,
+) => {
   const layer = new IconLayer<
     PointFeature<AnyProps> | ClusterFeature<AnyProps>
   >({
@@ -59,9 +63,9 @@ export const clusteredIconLayer = ({ clusters }: clusteredBoatData) => {
       if (pickedObject.properties.cluster === true) {
         console.log("Point count:", pickedObject.properties.point_count);
       }
-      console.log("ID:", pickedObject.id);
-      console.log("Name:", pickedObject.name);
-      console.log(pickedObject.properties);
+      if (pickedObject.properties.cluster !== true) {
+        setShipInfoOnClick(setShipInfo, pickedObject);
+      }
     },
   });
   return layer;
@@ -69,7 +73,7 @@ export const clusteredIconLayer = ({ clusters }: clusteredBoatData) => {
 
 export const LabeledclusteredScatterPlotLayer = (
   { clusters }: clusteredBoatData,
-  setShipInfo?: Dispatch<SetStateAction<ShipInfoProps | undefined>>,
+  setShipInfo: Dispatch<SetStateAction<ShipInfoProps | undefined>>,
 ) => {
   const scatterLayer = new ScatterplotLayer<
     PointFeature<AnyProps> | ClusterFeature<AnyProps>
@@ -98,15 +102,7 @@ export const LabeledclusteredScatterPlotLayer = (
 
       {
         if (pickedObject.properties.cluster !== true) {
-          setShipInfo?.({
-            id: pickedObject.properties.id,
-            lastActivityAt: pickedObject?.properties.lastActivityAt,
-            mmsi: pickedObject?.properties.mmsi,
-            startedAt: pickedObject?.properties.startedAt,
-            anomalyType: pickedObject?.properties.type,
-            location: pickedObject.geometry?.coordinates,
-          });
-          console.log(pickedObject.geometry?.coordinates + " COORDINATES");
+          setShipInfoOnClick(setShipInfo, pickedObject);
         }
       }
     },
