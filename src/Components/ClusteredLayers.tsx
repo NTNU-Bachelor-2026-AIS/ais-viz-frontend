@@ -24,6 +24,7 @@ import Supercluster, {
 } from "supercluster";
 import type { ShipInfoProps } from "./ShipInfo/ShipInfo";
 import { setShipInfoOnClick } from "../utils/MapInteractionUtils";
+import { iconLayer } from "./DeckLayers";
 
 type boat = {
   ShipName: string;
@@ -115,7 +116,8 @@ export const LabeledclusteredScatterPlotLayer = (
     getColor: [255, 128, 0],
     getSize: 16,
     getTextAnchor: "middle",
-    getText: (d: any) => d.properties.point_count?.toString(),
+    getText: (d: any) =>
+      d.properties.point_count > 1 ? d.properties.point_count?.toString() : "1",
     getPosition: (d: any) => d.geometry.coordinates,
   });
 
@@ -143,6 +145,9 @@ function setDataSize(size: number, maxSize: number) {
   const tmax = 30;
 
   const normalized = (Math.sqrt(size) - rmin) / (rmax - rmin);
+  if (size == 3) return 20;
+  if (size == 2) return 15;
+  if (size == 1) return 9;
 
   return normalized * (tmax - tmin) + tmin;
 }

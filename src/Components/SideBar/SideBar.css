@@ -44,7 +44,7 @@
   background-color: var(--color-primary-active);
 }
 
-.boat-id, .boat-mmsi {
+.boat-id, .boat-mmsi, .anomaly-type {
   font-size: 1 rem;
   font-weight: 400;
   color: var(--color-navy);
