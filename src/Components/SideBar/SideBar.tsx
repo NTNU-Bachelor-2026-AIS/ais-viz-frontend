@@ -1,53 +1,92 @@
-import React from 'react';
-import './SideBar.css';
+import React, { useEffect, useState } from "react";
+import "./SideBar.css";
+import type {
+  Feature,
+  FeatureCollection,
+  GeoJsonProperties,
+  Geometry,
+} from "geojson";
+import type { Point } from "geojson";
+import { SideBarListItemDetails } from "./SideBarListItemDetails";
+import { getMMSI } from "../../api/posts";
 
-const SideBar: React.FC = () => {
-  // Dummy data representing database
-  const boats = [
-    { id: '20502', mmsi: '9344851', name: 'Arctic Ocean' },
-    { id: '20503', mmsi: '9123456', name: 'Nordic Star' },
-    { id: '20504', mmsi: '9876543', name: 'Baltic Trans' },
-    { id: '20505', mmsi: '9445566', name: 'Sea Voyager' },
-    { id: '20506', mmsi: '9223344', name: 'Coastal Guard' },
-    { id: '20507', mmsi: '9556677', name: 'North Queen' },
-    { id: '20508', mmsi: '9667788', name: 'Ocean Link' },
-    { id: '20502', mmsi: '9344851', name: 'Arctic Ocean' },
-    { id: '20503', mmsi: '9123456', name: 'Nordic Star' },
-    { id: '20504', mmsi: '9876543', name: 'Baltic Trans' },
-    { id: '20505', mmsi: '9445566', name: 'Sea Voyager' },
-    { id: '20506', mmsi: '9223344', name: 'Coastal Guard' },
-    { id: '20507', mmsi: '9556677', name: 'North Queen' },
-    { id: '20508', mmsi: '9667788', name: 'Ocean Link' },
-    { id: '20502', mmsi: '9344851', name: 'Arctic Ocean' },
-    { id: '20503', mmsi: '9123456', name: 'Nordic Star' },
-    { id: '20504', mmsi: '9876543', name: 'Baltic Trans' },
-    { id: '20505', mmsi: '9445566', name: 'Sea Voyager' },
-    { id: '20506', mmsi: '9223344', name: 'Coastal Guard' },
-    { id: '20507', mmsi: '9556677', name: 'North Queen' },
-    { id: '20508', mmsi: '9667788', name: 'Ocean Link' },
-  ];
-  return(
-        <aside className="boat-sidebar">
-            {/* Search Bar */}
-            <div className="search-container">
-                <input 
-                type="text" 
-                placeholder="Search boat by MMSI" 
-                className="sidebar-search"
-                />
-            </div>            
+interface sideBarProps {
+  responseData: FeatureCollection<Point>;
+}
 
-            {/* Scrollable Content Section */}
-            <div className="list-container">
-                {boats.map((boat) => (
-                <div key={boat.id} className="boat-item">
-                    <span className="boat-id">ID : {boat.id},</span>
-                    <span className="boat-mmsi"> MMSI = {boat.mmsi}</span>
-                </div>
-                ))}
+export const SideBar = ({ responseData }: sideBarProps) => {
+  const [query, setquery] = useState("");
+  const [anomaly, setAnomaly] = useState<Feature<
+    Point,
+    GeoJsonProperties
+  > | null>(null);
+
+  const [filterList, setFilterList] = useState<FeatureCollection<Point>>();
+
+  useEffect(() => {
+    if (responseData.features.length != null) {
+      setFilterList(responseData);
+    }
+  }, [responseData]);
+
+  const handleSearch = async (e: { target: { value: any } }) => {
+    const value = e.target.value;
+    setquery(value);
+    if (value === "" && responseData.features.length != null) {
+      setFilterList(responseData);
+    } else {
+      const posts = await getMMSI(value);
+      if (posts?.features.length != null) {
+        setFilterList(posts);
+      }
+    }
+  };
+
+  const handleItemClick = (e: Feature<Point, GeoJsonProperties> | null) => {
+    setAnomaly(e);
+  };
+
+  return (
+    <aside className="boat-sidebar">
+      {/* Search Bar */}
+      <div className="search-container">
+        <input
+          type="text"
+          placeholder="Search boat by MMSI"
+          className="sidebar-search"
+          value={query}
+          onChange={handleSearch}
+        />
+      </div>
+
+      {/* Scrollable Content Section */}
+      <div className="list-container">
+        {filterList &&
+          filterList.features.length > 0 &&
+          filterList?.features.map((feature) => (
+            <div
+              key={feature.properties?.id}
+              className="boat-item"
+              onClick={() => handleItemClick(feature)}
+            >
+              <span className="boat-id">ID : {feature.properties?.id},</span>
+              <span className="boat-mmsi">
+                {" "}
+                MMSI: {feature.properties?.mmsi}
+              </span>
+              <span className="anomaly-type">
+                {" "}
+                : {feature.properties?.type}
+              </span>
+              {anomaly === feature ? (
+                <SideBarListItemDetails feature={feature} />
+              ) : null}{" "}
+              {/*  //
+              https://stackoverflow.com/questions/62517789/how-to-render-a-component-on-click-on-list-item-to-show-its-detail
+              here is code its based on. */}
             </div>
-        </aside>
-    );
+          ))}
+      </div>
+    </aside>
+  );
 };
-
-export default SideBar;
