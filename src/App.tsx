@@ -2,8 +2,8 @@ import { Header } from "@kystverket/styrbord";
 import "./App.css";
 import { SideBar } from "./Components/SideBar/SideBar";
 import ShipInfo, { type ShipInfoProps } from "./Components/ShipInfo/ShipInfo";
-import { LibreMap } from "./Components/LibreMap";
-import api from "./api/posts";
+import { LibreMap, type VisType } from "./Components/LibreMap";
+import { api, getMMSI } from "./api/posts";
 import { useEffect, useState } from "react";
 import type { FeatureCollection, Point } from "geojson";
 import SettingsBar from "./Components/SettingsBar/SettingsBar";
@@ -39,6 +39,8 @@ function App() {
 
   useEffect(() => {
     console.log("here is updated posts", posts);
+
+    console.log(getMMSI("3195482") + " heherererer");
   }, [posts]);
 
   return (
