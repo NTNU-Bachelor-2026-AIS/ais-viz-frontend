@@ -1,8 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./SideBar.css";
-import type { Feature, FeatureCollection, GeoJsonProperties } from "geojson";
+import type {
+  Feature,
+  FeatureCollection,
+  GeoJsonProperties,
+  Geometry,
+} from "geojson";
 import type { Point } from "geojson";
 import { SideBarListItemDetails } from "./SideBarListItemDetails";
+import { getMMSI } from "../../api/posts";
 
 interface sideBarProps {
   responseData: FeatureCollection<Point>;
@@ -15,9 +21,25 @@ export const SideBar = ({ responseData }: sideBarProps) => {
     GeoJsonProperties
   > | null>(null);
 
-  const handleSearch = (e: { target: { value: any } }) => {
+  const [filterList, setFilterList] = useState<FeatureCollection<Point>>();
+
+  useEffect(() => {
+    if (responseData.features.length != null) {
+      setFilterList(responseData);
+    }
+  }, [responseData]);
+
+  const handleSearch = async (e: { target: { value: any } }) => {
     const value = e.target.value;
     setquery(value);
+    if (value === "" && responseData.features.length != null) {
+      setFilterList(responseData);
+    } else {
+      const posts = await getMMSI(value);
+      if (posts?.features.length != null) {
+        setFilterList(posts);
+      }
+    }
   };
 
   const handleItemClick = (e: Feature<Point, GeoJsonProperties> | null) => {
@@ -39,23 +61,31 @@ export const SideBar = ({ responseData }: sideBarProps) => {
 
       {/* Scrollable Content Section */}
       <div className="list-container">
-        {responseData.features.map((feature) => (
-          <div
-            key={feature.properties?.id}
-            className="boat-item"
-            onClick={() => handleItemClick(feature)}
-          >
-            <span className="boat-id">ID : {feature.properties?.id},</span>
-            <span className="boat-mmsi"> MMSI: {feature.properties?.mmsi}</span>
-            <span className="anomaly-type"> : {feature.properties?.type}</span>
-            {anomaly === feature ? (
-              <SideBarListItemDetails feature={feature} />
-            ) : null}{" "}
-            {/*  //
-            https://stackoverflow.com/questions/62517789/how-to-render-a-component-on-click-on-list-item-to-show-its-detail
-            here is code its based on. */}
-          </div>
-        ))}
+        {filterList &&
+          filterList.features.length > 0 &&
+          filterList?.features.map((feature) => (
+            <div
+              key={feature.properties?.id}
+              className="boat-item"
+              onClick={() => handleItemClick(feature)}
+            >
+              <span className="boat-id">ID : {feature.properties?.id},</span>
+              <span className="boat-mmsi">
+                {" "}
+                MMSI: {feature.properties?.mmsi}
+              </span>
+              <span className="anomaly-type">
+                {" "}
+                : {feature.properties?.type}
+              </span>
+              {anomaly === feature ? (
+                <SideBarListItemDetails feature={feature} />
+              ) : null}{" "}
+              {/*  //
+              https://stackoverflow.com/questions/62517789/how-to-render-a-component-on-click-on-list-item-to-show-its-detail
+              here is code its based on. */}
+            </div>
+          ))}
       </div>
     </aside>
   );
