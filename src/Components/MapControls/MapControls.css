@@ -1,0 +1,30 @@
+/* Made with a small amount of help from AI */
+
+/* Ensures position and makes sure container is above the map */
+.mapcontrols-container {
+  position: absolute;
+  left: 30px;
+  left: 0%;
+  transform: translateX(50%);
+  z-index: 1000; 
+}
+
+.select-section {
+  display: flex;
+  gap: 8px;
+  padding: 8px 0px;
+}
+
+.label {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 5 px;
+  color: var(--color-navy);
+}
+
+.select {
+  width: '100%';
+  padding: '5px';
+  color: var(--color-navy);
+}
+

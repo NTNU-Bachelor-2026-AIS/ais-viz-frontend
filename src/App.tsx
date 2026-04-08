@@ -7,6 +7,7 @@ import api from "./api/posts";
 import { useEffect, useState } from "react";
 import type { FeatureCollection, Point } from "geojson";
 import SettingsBar from "./Components/SettingsBar/SettingsBar";
+import { MapControls } from "./Components/MapControls/MapControls";
 import { shipInfoContext } from "./Components/ShipInfo/ShipInfoContext";
 
 /* root component of the app
@@ -20,6 +21,7 @@ function App() {
     type: "FeatureCollection",
     features: [],
   });
+  const [activeVis, setActiveVis] = useState<VisType>("clustering");
 
   const shipInfoContextValue = { shipInfoProps, setShipInfoProps };
 
