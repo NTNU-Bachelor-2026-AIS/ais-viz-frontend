@@ -1,6 +1,6 @@
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useMemo, useRef } from "react";
 import style from "../CSS/LibreMap.module.css";
 import type { Point } from "geojson";
 import type { FeatureCollection } from "geojson";
@@ -37,10 +37,17 @@ export const MapContainer = ({
     0, 0, 0, 0,
   ]);
   const [zoom, setZoom] = useState<number>(0);
-  const clusterIndex = CreateCluster(responseData as any);
+
+  const clusterIndex = useMemo(() => {
+    if (!responseData?.features?.length) return null;
+    return CreateCluster(responseData as FeatureCollection<Point>);
+  }, [responseData]);
+
+  console.log("basemap rerender of mapitself");
 
   useEffect(() => {
     if (mapRef.current) return;
+    console.log("rerender of mapitself");
     mapRef.current = new maplibregl.Map({
       container: "map", // container id
       style: "https://tiles.openfreemap.org/styles/bright", // style URL
@@ -83,7 +90,9 @@ export const MapContainer = ({
   useEffect(() => {
     if (!mapRef.current || !shipInfoContextValue) return;
     if (cluster && deckOverlayRef.current) {
-      let clusters = getClusters(zoom, bounds, clusterIndex) ?? [];
+      let clusters = clusterIndex
+        ? getClusters(zoom, bounds, clusterIndex)
+        : [];
       deckOverlayRef.current.setProps({
         layers: [
           LabeledclusteredScatterPlotLayer(
@@ -98,7 +107,7 @@ export const MapContainer = ({
           layers: [],
         });
     }
-  }, [bounds, zoom, , cluster, responseData, overLayReady]);
+  }, [bounds, zoom, cluster, responseData, overLayReady]);
 
   return <div id="map" className={style.LibreMap}></div>;
 };
