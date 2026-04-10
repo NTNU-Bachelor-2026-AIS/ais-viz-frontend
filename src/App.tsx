@@ -21,7 +21,6 @@ function App() {
     type: "FeatureCollection",
     features: [],
   });
-  const [activeVis, setActiveVis] = useState<VisType>("clustering");
 
   const shipInfoContextValue = { shipInfoProps, setShipInfoProps };
 
