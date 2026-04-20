@@ -25,12 +25,14 @@ interface LibreMapProps {
       React.SetStateAction<ShipInfoProps | undefined>
     >;
   };
+  activeVis: VisType
   cluster?: Supercluster;
 }
 
 export const LibreMap = ({
   responseData,
   shipInfoContextValue,
+  activeVis,
   cluster,
 }: LibreMapProps) => {
   return (
@@ -38,6 +40,7 @@ export const LibreMap = ({
       <MapContainer
         responseData={responseData}
         shipInfoContextValue={shipInfoContextValue}
+        activeVis={activeVis}
       />
     </>
   );

@@ -73,9 +73,14 @@ function App() {
           <LibreMap
             responseData={posts}
             shipInfoContextValue={shipInfoContextValue}
+            activeVis={activeVis}
           ></LibreMap>
           {/* Floating components */}
           <FilterList onFilterSubmit={fetchAnomalies} />
+          <MapControls 
+              activeLayer={activeVis} 
+              setActiveLayer={setActiveVis} 
+            />
           <ShipInfo />
         </shipInfoContext.Provider>
         {/* <SettingsBar />*/}
