@@ -34,6 +34,7 @@ export const LibreMap = ({
   shipInfoContextValue,
   activeVis,
   cluster,
+  activeVis,
 }: LibreMapProps) => {
   return (
     <>
