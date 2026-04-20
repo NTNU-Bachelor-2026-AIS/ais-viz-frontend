@@ -77,7 +77,7 @@ const ShipInfo = () => {
             <p>New features later ?. </p>
           </div>
 
-          <button className="edit-button">Edit Info (Admin only)</button>
+          <button className="show-button">Show Anomalies</button>
         </div>
       </div>
     );
