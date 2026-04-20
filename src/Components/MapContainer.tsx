@@ -11,7 +11,7 @@ import type Supercluster from "supercluster";
 import { CreateCluster, getClusters } from "../utils/SuperClusterUtils";
 import { LabeledclusteredScatterPlotLayer } from "./ClusteredLayers";
 import type { shipInfoContextPropS } from "./ShipInfo/ShipInfoContext";
-import cluster from "cluster";
+//import cluster from "cluster";
 import type { ShipInfoProps } from "./ShipInfo/ShipInfo";
 import type { AnyProps, ClusterFeature, PointFeature } from "supercluster";
 import type { VisType } from "./LibreMap";
@@ -25,6 +25,7 @@ interface MapContainerProps {
       React.SetStateAction<ShipInfoProps | undefined>
     >;
   };
+  activeVis: VisType;
 }
 
 export const MapContainer = ({
