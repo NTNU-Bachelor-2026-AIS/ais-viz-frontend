@@ -21,7 +21,6 @@ export const getMMSI = async (
   }
 };
 
-
 export const getTypeFromString = async (
   anomalyType: string,
 ): Promise<FeatureCollection<Point> | undefined> => {
@@ -49,6 +48,32 @@ export const getTypeFromString = async (
       console.log(response.data);
       return response.data;
     }
+  } catch (error) {
+    console.log(error + " an error occured");
+    return { type: "FeatureCollection", features: [] };
+  }
+};
+
+export const getBaseStations = async (): Promise<FeatureCollection<Point>> => {
+  try {
+    const response = await api.get("/base-stations");
+    console.log("GET Response");
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.log(error + " an error occured");
+    return { type: "FeatureCollection", features: [] };
+  }
+};
+
+export const getAnomalyGroupIndividualPoints = async (
+  mmsi: string,
+): Promise<FeatureCollection<Point> | undefined> => {
+  try {
+    const response = await api.get("/anomaly-groups?mmsi=" + mmsi);
+    console.log("GET Response");
+    console.log(response.data);
+    return response.data;
   } catch (error) {
     console.log(error + " an error occured");
     return { type: "FeatureCollection", features: [] };
