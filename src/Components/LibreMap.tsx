@@ -7,10 +7,10 @@ import type { ShipInfoProps } from "./ShipInfo/ShipInfo";
 import type Supercluster from "supercluster";
 
 //import { Layer } from "react-map-gl/mapbox";
-import { useMemo } from 'react';
+import { useMemo } from "react";
 
 // Used to allow MapControls to use the values
-export type VisType = "clustering" | "heatmap"
+export type VisType = "clustering" | "heatmap";
 
 /* 
 Function component that creates a libremap instance from libremap open source project, is not finished as not going to have style inside
@@ -26,18 +26,20 @@ interface LibreMapProps {
     >;
   };
   cluster?: Supercluster;
+  baseStations: FeatureCollection<Point>;
 }
 
 export const LibreMap = ({
   responseData,
   shipInfoContextValue,
-  cluster,
+  baseStations,
 }: LibreMapProps) => {
   return (
     <>
       <MapContainer
         responseData={responseData}
         shipInfoContextValue={shipInfoContextValue}
+        baseStations={baseStations}
       />
     </>
   );

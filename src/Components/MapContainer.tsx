@@ -5,7 +5,7 @@ import style from "../CSS/LibreMap.module.css";
 import type { Point } from "geojson";
 import type { FeatureCollection } from "geojson";
 import { MapboxOverlay } from "@deck.gl/mapbox/typed";
-import { iconLayer, heatMapLayer } from "./DeckLayers";
+import { iconLayer, heatMapLayer, BaseStationIconLayer } from "./DeckLayers";
 import { useState } from "react";
 import { Layer } from "@deck.gl/core/typed";
 import type Supercluster from "supercluster";
@@ -24,11 +24,13 @@ interface MapContainerProps {
       React.SetStateAction<ShipInfoProps | undefined>
     >;
   };
+  baseStations: FeatureCollection<Point>;
 }
 
 export const MapContainer = ({
   shipInfoContextValue,
   responseData,
+  baseStations,
 }: MapContainerProps) => {
   const mapRef = useRef<maplibregl.Map>(null);
   const deckOverlayRef = useRef<MapboxOverlay>(null);
@@ -96,9 +98,12 @@ export const MapContainer = ({
       deckOverlayRef.current.setProps({
         layers: [
           LabeledclusteredScatterPlotLayer(
-            { clusters },
+            { clusters: clusters || [] },
             shipInfoContextValue.setShipInfoProps,
           ),
+          BaseStationIconLayer({
+            baseStations,
+          }),
         ],
       });
     } else {
