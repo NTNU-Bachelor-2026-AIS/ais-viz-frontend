@@ -15,7 +15,7 @@ export interface ShipInfoProps {
 /*
 ShipInfo component that will be a card to show information on ship and location when pressing its anomaly. 
 */
-const ShipInfo = () => {
+const ShipInfo = ({ onClose }) => {
   const shipInfo = useContext(shipInfoContext);
 
   if (shipInfo) {
@@ -47,6 +47,7 @@ const ShipInfo = () => {
             className="ship-image"
           />
         </div>
+        <button className="close-btn" onClick={onClose}>X</button>
 
         {/* Scrollable Content Section */}
         <div className="card-content">
