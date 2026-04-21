@@ -9,6 +9,8 @@ import type { FeatureCollection, Point } from "geojson";
 import SettingsBar from "./Components/SettingsBar/SettingsBar";
 import { MapControls } from "./Components/MapControls/MapControls";
 import { shipInfoContext } from "./Components/ShipInfo/ShipInfoContext";
+import { getFilteredAnomalies } from "./api/posts";
+import { FilterList } from "./Components/FilterList/FilterList";
 
 /* root component of the app
  */
@@ -50,6 +52,21 @@ function App() {
     baseStationData();
   }, []);
 
+  const fetchAnomalies = async (filters: any) => {
+    const activeFilters = Object.fromEntries(
+      Object.entries(filters)
+    );
+    
+    const data = await getFilteredAnomalies(activeFilters);
+    if (data) {
+      setposts(data);
+    }
+  }
+
+  useEffect(() => {
+    fetchAnomalies({});
+  },[]);
+
   return (
     <>
       <Header
@@ -64,12 +81,18 @@ function App() {
             responseData={posts}
             shipInfoContextValue={shipInfoContextValue}
             baseStations={baseStations}
+            activeVis={activeVis}
           ></LibreMap>
           {/* Floating components */}
+          <FilterList onFilterSubmit={fetchAnomalies} />
+          <MapControls 
+              activeLayer={activeVis} 
+              setActiveLayer={setActiveVis} 
+            />
           <ShipInfo />
         </shipInfoContext.Provider>
         {/* <SettingsBar />*/}
-        <SideBar responseData={posts} />
+        {/*<SideBar responseData={posts} />*/}
       </main>
     </>
   );

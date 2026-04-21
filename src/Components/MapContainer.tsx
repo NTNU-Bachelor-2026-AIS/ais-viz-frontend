@@ -1,6 +1,6 @@
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { useContext, useEffect, useMemo, useRef } from "react";
+import { useContext, useEffect, useRef, useState, useMemo } from "react";
 import style from "../CSS/LibreMap.module.css";
 import type { Point } from "geojson";
 import type { FeatureCollection } from "geojson";
@@ -12,9 +12,10 @@ import type Supercluster from "supercluster";
 import { CreateCluster, getClusters } from "../utils/SuperClusterUtils";
 import { LabeledclusteredScatterPlotLayer } from "./ClusteredLayers";
 import type { shipInfoContextPropS } from "./ShipInfo/ShipInfoContext";
-import cluster from "cluster";
+//import cluster from "cluster";
 import type { ShipInfoProps } from "./ShipInfo/ShipInfo";
 import type { AnyProps, ClusterFeature, PointFeature } from "supercluster";
+import type { VisType } from "./LibreMap";
 
 interface MapContainerProps {
   responseData?: FeatureCollection<Point>;
@@ -25,11 +26,13 @@ interface MapContainerProps {
     >;
   };
   baseStations: FeatureCollection<Point>;
+  activeVis: VisType;
 }
 
 export const MapContainer = ({
   shipInfoContextValue,
   responseData,
+  activeVis,
   baseStations,
 }: MapContainerProps) => {
   const mapRef = useRef<maplibregl.Map>(null);
@@ -40,13 +43,12 @@ export const MapContainer = ({
   ]);
   const [zoom, setZoom] = useState<number>(0);
 
+  // Cluster Index is only created when Responsedata changes
   const clusterIndex = useMemo(() => {
-    if (!responseData?.features?.length) return null;
-    return CreateCluster(responseData as FeatureCollection<Point>);
+    if (!responseData) return null;
+    return CreateCluster(responseData as any);
   }, [responseData]);
-
-  console.log("basemap rerender of mapitself");
-
+  
   useEffect(() => {
     if (mapRef.current) return;
     console.log("rerender of mapitself");
@@ -90,29 +92,25 @@ export const MapContainer = ({
   }, []);
 
   useEffect(() => {
-    if (!mapRef.current || !shipInfoContextValue) return;
-    if (cluster && deckOverlayRef.current) {
-      let clusters = clusterIndex
-        ? getClusters(zoom, bounds, clusterIndex)
-        : [];
-      deckOverlayRef.current.setProps({
-        layers: [
-          LabeledclusteredScatterPlotLayer(
-            { clusters: clusters || [] },
-            shipInfoContextValue.setShipInfoProps,
-          ),
-          BaseStationIconLayer({
-            baseStations,
-          }),
-        ],
-      });
-    } else {
-      if (responseData)
-        deckOverlayRef.current?.setProps({
-          layers: [],
-        });
+    if (!mapRef.current || !shipInfoContextValue || !deckOverlayRef.current) return;
+    let activeLayers: any[] = [];
+
+    if (activeVis === "clustering" && clusterIndex) {
+      let clusters = getClusters(zoom, bounds, clusterIndex) ?? [];
+      activeLayers = LabeledclusteredScatterPlotLayer(
+        { clusters },
+        shipInfoContextValue.setShipInfoProps
+      );
     }
-  }, [bounds, zoom, cluster, responseData, overLayReady]);
+    else if (activeVis === "heatmap" && responseData) {
+      activeLayers = [heatMapLayer({ responseData })];
+    }
+
+    deckOverlayRef.current.setProps({
+      layers: activeLayers
+    });
+      
+  }, [bounds, zoom, activeVis, clusterIndex, responseData, overLayReady]);
 
   return <div id="map" className={style.LibreMap}></div>;
 };
