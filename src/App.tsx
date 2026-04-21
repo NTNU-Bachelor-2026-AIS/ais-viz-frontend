@@ -81,7 +81,9 @@ function App() {
               activeLayer={activeVis} 
               setActiveLayer={setActiveVis} 
             />
-          <ShipInfo />
+          <ShipInfo 
+            onClose={() => setShipInfoProps(undefined)}
+          />
         </shipInfoContext.Provider>
         {/* <SettingsBar />*/}
         {/*<SideBar responseData={posts} />*/}

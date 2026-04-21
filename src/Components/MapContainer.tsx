@@ -18,7 +18,6 @@ import type { VisType } from "./LibreMap";
 
 interface MapContainerProps {
   responseData?: FeatureCollection<Point>;
-  activeVis: VisType;
   shipInfoContextValue?: {
     shipInfoProps: ShipInfoProps | undefined;
     setShipInfoProps: React.Dispatch<
@@ -89,10 +88,10 @@ export const MapContainer = ({
   }, []);
 
   useEffect(() => {
-    if (!mapRef.current || !shipInfoContextValue) return;
+    if (!mapRef.current || !shipInfoContextValue || !deckOverlayRef.current) return;
     let activeLayers: any[] = [];
 
-    if (activeVis === "clustering" && cluster && deckOverlayRef.current) {
+    if (activeVis === "clustering" && clusterIndex) {
       let clusters = getClusters(zoom, bounds, clusterIndex) ?? [];
       activeLayers = LabeledclusteredScatterPlotLayer(
         { clusters },
@@ -107,7 +106,7 @@ export const MapContainer = ({
       layers: activeLayers
     });
       
-  }, [bounds, zoom, activeVis, clusterIndex, cluster, responseData, overLayReady]);
+  }, [bounds, zoom, activeVis, clusterIndex, responseData, overLayReady]);
 
   return <div id="map" className={style.LibreMap}></div>;
 };
