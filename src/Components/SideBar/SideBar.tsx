@@ -53,7 +53,7 @@ export const SideBar = ({ responseData }: sideBarProps) => {
     }
   };
 
-  const debouncedHandleSearch = useCallback(debounce(handleSearch, 150), [
+  const debouncedHandleSearch = useCallback(debounce(handleSearch, 2000), [
     responseData,
     dropDownSelect,
   ]);
