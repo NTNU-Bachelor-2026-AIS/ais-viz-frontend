@@ -18,23 +18,28 @@ import { HeatmapLayer } from "deck.gl/typed";
 import { feature, featureCollection } from "@turf/turf";
 import type { isAnyArrayBuffer } from "node:util/types";
 import Supercluster, {
-  type AnyProps,
   type ClusterFeature,
   type PointFeature,
+  type AnyProps,
 } from "supercluster";
+import type { GeoJsonProperties } from "geojson";
 import type { ShipInfoProps } from "./ShipInfo/ShipInfo";
 import { setShipInfoOnClick } from "../utils/MapInteractionUtils";
 import { iconLayer } from "./DeckLayers";
 
+import { anomalyGroupScatterPlotLayer } from "./DeckLayers";
+
 type boat = {
-  ShipName: string;
-  mmid: number;
+  mmsi: number;
   date: string;
   coordinates: [longitude: number, latitude: number];
 };
 
 interface clusteredBoatData {
-  clusters: (ClusterFeature<AnyProps> | PointFeature<AnyProps>)[];
+  clusters: (
+    | ClusterFeature<GeoJsonProperties>
+    | PointFeature<GeoJsonProperties>
+  )[];
 }
 
 export const clusteredIconLayer = (
@@ -76,7 +81,7 @@ export const LabeledclusteredScatterPlotLayer = (
   { clusters }: clusteredBoatData,
   setShipInfo: Dispatch<SetStateAction<ShipInfoProps | undefined>>,
 ) => {
-  const scatterLayer = new ScatterplotLayer<
+  let scatterLayer = new ScatterplotLayer<
     PointFeature<AnyProps> | ClusterFeature<AnyProps>
   >({
     id: "ScatterplotLayer",
@@ -103,7 +108,11 @@ export const LabeledclusteredScatterPlotLayer = (
 
       {
         if (pickedObject.properties.cluster !== true) {
+          let anomalyGroupLayer = anomalyGroupScatterPlotLayer(
+            pickedObject.properties.mmsi,
+          );
           setShipInfoOnClick(setShipInfo, pickedObject);
+          return [anomalyGroupLayer];
         }
       }
     },
