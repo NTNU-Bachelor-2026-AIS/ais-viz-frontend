@@ -3,7 +3,7 @@ import "./App.css";
 import { SideBar } from "./Components/SideBar/SideBar";
 import ShipInfo, { type ShipInfoProps } from "./Components/ShipInfo/ShipInfo";
 import { LibreMap, type VisType } from "./Components/LibreMap";
-import { api, getMMSI } from "./api/posts";
+import { api, getBaseStations } from "./api/posts";
 import { useEffect, useState } from "react";
 import type { FeatureCollection, Point } from "geojson";
 import SettingsBar from "./Components/SettingsBar/SettingsBar";
@@ -22,10 +22,15 @@ function App() {
     features: [],
   });
 
+  const [baseStations, setBaseStations] = useState<FeatureCollection<Point>>({
+    type: "FeatureCollection",
+    features: [],
+  });
+
   const shipInfoContextValue = { shipInfoProps, setShipInfoProps };
 
   useEffect(() => {
-    const data = async () => {
+    const fetchAnomalyData = async () => {
       try {
         const response = await api.get("/anomaly-groups");
         setposts(response.data);
@@ -33,14 +38,17 @@ function App() {
         console.log(error + " an error occured");
       }
     };
-    data();
+    fetchAnomalyData();
   }, []);
 
   useEffect(() => {
-    console.log("here is updated posts", posts);
+    const baseStationData = async () => {
+      const baseStations = await getBaseStations();
+      setBaseStations(baseStations);
+    };
 
-    console.log(getMMSI("3195482") + " heherererer");
-  }, [posts]);
+    baseStationData();
+  }, []);
 
   return (
     <>
@@ -55,6 +63,7 @@ function App() {
           <LibreMap
             responseData={posts}
             shipInfoContextValue={shipInfoContextValue}
+            baseStations={baseStations}
           ></LibreMap>
           {/* Floating components */}
           <ShipInfo />
