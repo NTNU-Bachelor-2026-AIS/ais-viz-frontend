@@ -6,7 +6,6 @@ import type { Point } from "geojson";
 import type { FeatureCollection } from "geojson";
 import { MapboxOverlay } from "@deck.gl/mapbox/typed";
 import { iconLayer, heatMapLayer, BaseStationIconLayer } from "./DeckLayers";
-import { useState } from "react";
 import { Layer } from "@deck.gl/core/typed";
 import type Supercluster from "supercluster";
 import { CreateCluster, getClusters } from "../utils/SuperClusterUtils";
