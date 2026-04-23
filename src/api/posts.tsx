@@ -7,6 +7,9 @@ export const api = axios.create({
   baseURL: "http://localhost:3000/api/v1",
 });
 
+/*
+function that returns an anomaly group based on mmsi. 
+*/
 export const getMMSI = async (
   mmsi: string,
 ): Promise<FeatureCollection<Point> | undefined> => {
@@ -21,6 +24,27 @@ export const getMMSI = async (
   }
 };
 
+/*
+method that returns featurecollection of anomaly points related to an anomaly group id. 
+*/
+export const getAnomalyPointsById = async (
+  id: string,
+): Promise<FeatureCollection<Point> | undefined> => {
+  try {
+    const response = await api.get("anomaly-groups/" + id);
+    console.log("GET Response");
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.log(error + " an error occured");
+    return { type: "FeatureCollection", features: [] };
+  }
+};
+
+
+/*
+Method that makes api call to get a featurecollection of anomalies of specific type from input string. 
+*/
 export const getTypeFromString = async (
   anomalyType: string,
 ): Promise<FeatureCollection<Point> | undefined> => {
@@ -54,6 +78,10 @@ export const getTypeFromString = async (
   }
 };
 
+/*
+Method that gets all basestation and returns a promise of the featurecollection of basestations. 
+default and empty featurecollection is returned.
+*/
 export const getBaseStations = async (): Promise<FeatureCollection<Point>> => {
   try {
     const response = await api.get("/base-stations");
@@ -65,6 +93,7 @@ export const getBaseStations = async (): Promise<FeatureCollection<Point>> => {
     return { type: "FeatureCollection", features: [] };
   }
 };
+
 
 export const getAnomalyGroupIndividualPoints = async (
   mmsi: string,
