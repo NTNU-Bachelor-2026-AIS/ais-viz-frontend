@@ -10,7 +10,6 @@ import type Supercluster from "supercluster";
 import { useMemo } from "react";
 
 // Used to allow MapControls to use the values
-export type VisType = "clustering" | "heatmap";
 
 /* 
 Function component that creates a libremap instance from libremap open source project, is not finished as not going to have style inside
@@ -25,7 +24,6 @@ interface LibreMapProps {
       React.SetStateAction<ShipInfoProps | undefined>
     >;
   };
-  activeVis: VisType
   cluster?: Supercluster;
   baseStations: FeatureCollection<Point>;
 }
@@ -34,7 +32,6 @@ export const LibreMap = ({
   responseData,
   shipInfoContextValue,
   baseStations,
-  activeVis,
 }: LibreMapProps) => {
   return (
     <>
@@ -42,7 +39,6 @@ export const LibreMap = ({
         responseData={responseData}
         shipInfoContextValue={shipInfoContextValue}
         baseStations={baseStations}
-        activeVis={activeVis}
       />
     </>
   );
