@@ -1,4 +1,4 @@
-import { ScatterplotLayer } from "@deck.gl/layers/typed";
+import { LineLayer, ScatterplotLayer } from "@deck.gl/layers/typed";
 import type {
   Feature,
   FeatureCollection,
@@ -13,17 +13,10 @@ import { IconLayer } from "@deck.gl/layers/typed";
 import { HeatmapLayer } from "deck.gl/typed";
 import { feature, featureCollection } from "@turf/turf";
 import type { isAnyArrayBuffer } from "node:util/types";
-import { getMMSI } from "../api/posts";
+import { getMMSI, getAnomalyPointsById } from "../api/posts";
 import { type AnyProps } from "supercluster";
-
-/*
-Defines a type of boat with a shipname, mmid, date and coordinates.  
-*/
-type anomalyGroup = {
-  mmsid: number;
-  date: string;
-  coordinates: [longitude: number, latitude: number];
-};
+import { mapBaseStationToCoords } from "../utils/MapInteractionUtils";
+import { signalStrengthGradient } from "../utils/ColorGradientUtils";
 
 /*
 interface creating a type of featurecollection called responsedata which will be used for creating layers 
@@ -47,7 +40,7 @@ const jittery = () => Math.random() * 2;
 Function that creates an iconlayer based on a featurecollection in parameter  
 */
 export const iconLayer = ({ responseData }: anomalyGroupData) => {
-  const layer = new IconLayer<anomalyGroup>({
+  const layer = new IconLayer<any>({
     id: "IconLayer",
     data: responseData.features,
     getColor: (d: any) => [Math.sqrt(d.exits), 140, 0],
@@ -68,7 +61,7 @@ function that creates a deckgl iconlayer specifically for the base stations of t
 gets a featurecollection in parameter that it will create the layer out of 
 */
 export const BaseStationIconLayer = ({ baseStations }: baseStationData) => {
-  const layer = new IconLayer<anomalyGroup>({
+  const layer = new IconLayer<any>({
     id: "IconLayer",
     data: baseStations.features,
     getColor: (d: any) => [0, 0, 255],
@@ -86,21 +79,58 @@ export const BaseStationIconLayer = ({ baseStations }: baseStationData) => {
   return layer;
 };
 
-export const anomalyGroupScatterPlotLayer = async (searchString: string) => {
-  const anomalyData = await getMMSI(searchString);
-  const scatterPlotLayer = new ScatterplotLayer<anomalyGroup>({
+/*
+Function that returns a layer that is made up of a scatterplot of an anomaly group and linelayers of signalstrength of the individual
+points inside of the anomaly group tied to their basestation 
+basestation coordinates are hardcoded in MapInteractionUtiLS. 
+*/
+export const anomalyGroupScatterPlotLayer = async (mmsi: string) => {
+  const anomalyData = await getMMSI(mmsi);
+  console.log("anomalydata features " + anomalyData?.features);
+  const features = anomalyData?.features;
+
+  const anomalyGroupLayer = new ScatterplotLayer<any>({
     id: "scatterPlotLayer",
     data: anomalyData?.features,
     getPosition: (d: any) => d.geometry.coordinates,
+    getRadius: 600,
+    getFillColor: [255, 140, 0],
+    getLineColor: [0, 0, 0],
+    getLineWidth: 10,
+    radiusScale: 60,
+    pickable: true,
   });
-  return scatterPlotLayer;
+
+  const anomalyID = features?.[0]?.properties?.id;
+
+  const individualAnomalyData = await getAnomalyPointsById(anomalyID);
+
+  const coords = await mapBaseStationToCoords();
+
+  // for (let i = 1; i <= coords.size; i++) {
+  //  console.log("COOOOORODINATES" + coords.get(i));
+  //}
+
+  const lineLayer = new LineLayer<any>({
+    id: "LineLayer",
+    data: individualAnomalyData?.features,
+    getColor: (d: any) =>
+      signalStrengthGradient(d.properties.signalStrength).rgb(),
+    getSourcePosition: (d) => d.geometry.coordinates,
+    getTargetPosition: (d: any) =>
+      coords.get(d.properties.sourceId) ?? ([0, 0] as [number, number]),
+    getWidth: 12,
+    pickable: true,
+  });
+
+  return [anomalyGroupLayer, lineLayer];
 };
 
 /*
 function that creates a deckgl heat map layer based on featurecollection data sent in parameter.   
 */
 export const heatMapLayer = ({ responseData }: anomalyGroupData) => {
-  const layer = new HeatmapLayer<anomalyGroup>({
+  const layer = new HeatmapLayer<any>({
     id: "HeatmapLayer",
     data: responseData.features,
     aggregation: "SUM",
@@ -108,7 +138,6 @@ export const heatMapLayer = ({ responseData }: anomalyGroupData) => {
     getWeight: (d: any) => 1,
     radiusPixels: 40,
   });
-  console.log(responseData.features);
   return layer;
 };
 
