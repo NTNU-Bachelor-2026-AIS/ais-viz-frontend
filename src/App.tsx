@@ -3,7 +3,7 @@ import "./App.css";
 import { SideBar } from "./Components/SideBar/SideBar";
 import ShipInfo, { type ShipInfoProps } from "./Components/ShipInfo/ShipInfo";
 import { LibreMap, type VisType } from "./Components/LibreMap";
-import { api, getMMSI } from "./api/posts";
+import { api, getBaseStations } from "./api/posts";
 import { useEffect, useState } from "react";
 import type { FeatureCollection, Point } from "geojson";
 import SettingsBar from "./Components/SettingsBar/SettingsBar";
@@ -11,6 +11,7 @@ import { MapControls } from "./Components/MapControls/MapControls";
 import { shipInfoContext } from "./Components/ShipInfo/ShipInfoContext";
 import { getFilteredAnomalies } from "./api/posts";
 import { FilterList } from "./Components/FilterList/FilterList";
+import { LayerContext } from "./utils/activeVisContext";
 
 /* root component of the app
  */
@@ -23,12 +24,17 @@ function App() {
     type: "FeatureCollection",
     features: [],
   });
-  const [activeVis, setActiveVis] = useState<VisType>("clustering");
+
+  const [baseStations, setBaseStations] = useState<FeatureCollection<Point>>({
+    type: "FeatureCollection",
+    features: [],
+  });
 
   const shipInfoContextValue = { shipInfoProps, setShipInfoProps };
+  const [activeVis, setActiveVis] = useState<VisType>("clustering");
 
   useEffect(() => {
-    const data = async () => {
+    const fetchAnomalyData = async () => {
       try {
         const response = await api.get("/anomaly-groups");
         setposts(response.data);
@@ -36,29 +42,30 @@ function App() {
         console.log(error + " an error occured");
       }
     };
-    data();
+    fetchAnomalyData();
   }, []);
 
   useEffect(() => {
-    console.log("here is updated posts", posts);
+    const baseStationData = async () => {
+      const baseStations = await getBaseStations();
+      setBaseStations(baseStations);
+    };
 
-    console.log(getMMSI("3195482") + " heherererer");
-  }, [posts]);
+    baseStationData();
+  }, []);
 
   const fetchAnomalies = async (filters: any) => {
-    const activeFilters = Object.fromEntries(
-      Object.entries(filters)
-    );
-    
+    const activeFilters = Object.fromEntries(Object.entries(filters));
+
     const data = await getFilteredAnomalies(activeFilters);
     if (data) {
       setposts(data);
     }
-  }
+  };
 
   useEffect(() => {
     fetchAnomalies({});
-  },[]);
+  }, []);
 
   return (
     <>
@@ -70,18 +77,17 @@ function App() {
       <main className="content-area">
         {/* Map Component */}
         <shipInfoContext.Provider value={{ shipInfoProps, setShipInfoProps }}>
-          <LibreMap
-            responseData={posts}
-            shipInfoContextValue={shipInfoContextValue}
-            activeVis={activeVis}
-          ></LibreMap>
-          {/* Floating components */}
-          <FilterList onFilterSubmit={fetchAnomalies} />
-          <MapControls 
-              activeLayer={activeVis} 
-              setActiveLayer={setActiveVis} 
-            />
-          <ShipInfo />
+          <LayerContext.Provider value={{ activeVis, setActiveVis }}>
+            <LibreMap
+              responseData={posts}
+              shipInfoContextValue={shipInfoContextValue}
+              baseStations={baseStations}
+            ></LibreMap>
+            {/* Floating components */}
+            {/*<FilterList onFilterSubmit={fetchAnomalies} />*/}
+            <MapControls />
+            <ShipInfo />
+          </LayerContext.Provider>
         </shipInfoContext.Provider>
         {/* <SettingsBar />*/}
         {/*<SideBar responseData={posts} />*/}

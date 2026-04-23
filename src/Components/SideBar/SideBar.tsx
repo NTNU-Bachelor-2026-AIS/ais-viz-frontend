@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import "./SideBar.css";
 import type {
   Feature,
@@ -8,11 +8,14 @@ import type {
 } from "geojson";
 import type { Point } from "geojson";
 import { SideBarListItemDetails } from "./SideBarListItemDetails";
-import { getMMSI } from "../../api/posts";
+import { getMMSI, getTypeFromString } from "../../api/posts";
+import { debounce } from "lodash";
 
 interface sideBarProps {
   responseData: FeatureCollection<Point>;
 }
+
+type SearchType = "ANOMALYTYPE" | "MMSI";
 
 export const SideBar = ({ responseData }: sideBarProps) => {
   const [query, setquery] = useState("");
@@ -23,24 +26,37 @@ export const SideBar = ({ responseData }: sideBarProps) => {
 
   const [filterList, setFilterList] = useState<FeatureCollection<Point>>();
 
+  const [dropDownSelect, setDropDownSelect] =
+    useState<SearchType>("ANOMALYTYPE");
+
   useEffect(() => {
     if (responseData.features.length != null) {
       setFilterList(responseData);
     }
   }, [responseData]);
 
-  const handleSearch = async (e: { target: { value: any } }) => {
-    const value = e.target.value;
-    setquery(value);
-    if (value === "" && responseData.features.length != null) {
+  const handleSearch = async (searchString: string) => {
+    let posts: FeatureCollection<Point, GeoJsonProperties> | undefined;
+    if (searchString === "" && filterList != responseData) {
       setFilterList(responseData);
     } else {
-      const posts = await getMMSI(value);
-      if (posts?.features.length != null) {
+      if (dropDownSelect == "ANOMALYTYPE") {
+        posts = await getTypeFromString(searchString);
+      }
+
+      if (dropDownSelect == "MMSI") {
+        posts = await getMMSI(searchString);
+      }
+      if (Array.isArray(posts?.features) && posts.features.length > 0) {
         setFilterList(posts);
       }
     }
   };
+
+  const debouncedHandleSearch = useCallback(debounce(handleSearch, 2000), [
+    responseData,
+    dropDownSelect,
+  ]);
 
   const handleItemClick = (e: Feature<Point, GeoJsonProperties> | null) => {
     setAnomaly(e);
@@ -52,11 +68,24 @@ export const SideBar = ({ responseData }: sideBarProps) => {
       <div className="search-container">
         <input
           type="text"
-          placeholder="Search boat by MMSI"
+          placeholder={"Search boat by " + dropDownSelect?.toLocaleLowerCase()}
           className="sidebar-search"
           value={query}
-          onChange={handleSearch}
+          onChange={(e) => {
+            setquery(e.target.value);
+            debouncedHandleSearch(e.target.value);
+          }}
         />
+      </div>
+      <div className="sidebar-dropdown">
+        <div>Choose what to search by</div>
+        <select
+          value={dropDownSelect}
+          onChange={(e) => setDropDownSelect(e.target.value as SearchType)}
+        >
+          <option value="ANOMALYTYPE">anomalyType</option>
+          <option value="MMSI">mmsi</option>
+        </select>
       </div>
 
       {/* Scrollable Content Section */}

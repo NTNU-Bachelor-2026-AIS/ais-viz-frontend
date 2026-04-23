@@ -3,6 +3,7 @@ import type { FeatureCollection, Point } from "geojson";
 import Supercluster from "supercluster";
 
 export const CreateCluster = (data: FeatureCollection<Point>) => {
+  if (!data?.features?.length) return null;
   return new Supercluster({
     log: true,
     radius: 40,
