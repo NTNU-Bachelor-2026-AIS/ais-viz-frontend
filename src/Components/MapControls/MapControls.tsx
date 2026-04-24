@@ -1,23 +1,20 @@
-import type { VisType } from "../LibreMap.tsx"
+import { useContext } from "react";
+import { LayerContext } from "../../utils/activeVisContext.tsx";
+import type { VisType } from "../LibreMap.tsx";
 
-interface MapControlsProps {
-  activeLayer: VisType;
-  setActiveLayer: (type: VisType) => void;
-}
-
-export const MapControls = ({ activeLayer, setActiveLayer }: MapControlsProps) => {
+export const MapControls = () => {
+  const context = useContext(LayerContext);
   return (
     <div className="mapcontrols-container">
-        <div className="select-section">
+      <div className="select-section">
         <label>Visualization</label>
-        <select 
-          value={activeLayer} 
-          onChange={(e) => setActiveLayer(e.target.value as VisType)}
+        <select
+          onChange={(e) => context?.setActiveVis(e.target.value as VisType)}
         >
           <option value="clustering">Clustering</option>
           <option value="heatmap">Heatmap</option>
         </select>
       </div>
     </div>
-      );
-    };
+  );
+};

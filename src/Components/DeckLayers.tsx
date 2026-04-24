@@ -1,5 +1,10 @@
-import { ScatterplotLayer } from "@deck.gl/layers/typed";
-import type { Feature, FeatureCollection, Geometry } from "geojson";
+import { LineLayer, ScatterplotLayer } from "@deck.gl/layers/typed";
+import type {
+  Feature,
+  FeatureCollection,
+  GeoJsonProperties,
+  Geometry,
+} from "geojson";
 import type { Point } from "geojson";
 import React from "react";
 import { DeckGL } from "@deck.gl/react/typed";
@@ -8,23 +13,34 @@ import { IconLayer } from "@deck.gl/layers/typed";
 import { HeatmapLayer } from "deck.gl/typed";
 import { feature, featureCollection } from "@turf/turf";
 import type { isAnyArrayBuffer } from "node:util/types";
+import { getMMSI, getAnomalyPointsById } from "../api/posts";
+import { type AnyProps } from "supercluster";
+import { mapBaseStationToCoords } from "../utils/MapInteractionUtils";
+import { signalStrengthGradient } from "../utils/ColorGradientUtils";
 
-type boat = {
-  ShipName: string;
-  mmid: number;
-  date: string;
-  coordinates: [longitude: number, latitude: number];
-};
-
-interface boatData {
+/*
+interface creating a type of featurecollection called responsedata which will be used for creating layers 
+*/
+interface anomalyGroupData {
   responseData: FeatureCollection<Point>;
+}
+
+/*
+interface creating a type of featurecollection called basestations, just use to differentiate from the other featurecollection
+used specificalyl for creating the base station layer. 
+*/
+interface baseStationData {
+  baseStations: FeatureCollection<Point>;
 }
 
 const jitterx = () => Math.random() * 3;
 const jittery = () => Math.random() * 2;
 
-export const iconLayer = ({ responseData }: boatData) => {
-  const layer = new IconLayer<boat>({
+/*
+Function that creates an iconlayer based on a featurecollection in parameter  
+*/
+export const iconLayer = ({ responseData }: anomalyGroupData) => {
+  const layer = new IconLayer<any>({
     id: "IconLayer",
     data: responseData.features,
     getColor: (d: any) => [Math.sqrt(d.exits), 140, 0],
@@ -40,8 +56,81 @@ export const iconLayer = ({ responseData }: boatData) => {
   return layer;
 };
 
-export const heatMapLayer = ({ responseData }: boatData) => {
-  const layer = new HeatmapLayer<boat>({
+/*
+function that creates a deckgl iconlayer specifically for the base stations of the project, with their own svg. 
+gets a featurecollection in parameter that it will create the layer out of 
+*/
+export const BaseStationIconLayer = ({ baseStations }: baseStationData) => {
+  const layer = new IconLayer<any>({
+    id: "IconLayer",
+    data: baseStations.features,
+    getColor: (d: any) => [0, 0, 255],
+    getIcon: () => ({
+      url: "/ais-viz-frontend/public/icons/BaseStation.svg",
+      width: 30,
+      height: 30,
+      mask: true,
+    }),
+    getPosition: (d: any) => d.geometry.coordinates,
+    getSize: 40,
+
+    pickable: true,
+  });
+  return layer;
+};
+
+/*
+Function that returns a layer that is made up of a scatterplot of an anomaly group and linelayers of signalstrength of the individual
+points inside of the anomaly group tied to their basestation 
+basestation coordinates are hardcoded in MapInteractionUtiLS. 
+*/
+export const anomalyGroupScatterPlotLayer = async (mmsi: string) => {
+  const anomalyData = await getMMSI(mmsi);
+  console.log("anomalydata features " + anomalyData?.features);
+  const features = anomalyData?.features;
+
+  const anomalyGroupLayer = new ScatterplotLayer<any>({
+    id: "scatterPlotLayer",
+    data: anomalyData?.features,
+    getPosition: (d: any) => d.geometry.coordinates,
+    getRadius: 600,
+    getFillColor: [255, 140, 0],
+    getLineColor: [0, 0, 0],
+    getLineWidth: 10,
+    radiusScale: 60,
+    pickable: true,
+  });
+
+  const anomalyID = features?.[0]?.properties?.id;
+
+  const individualAnomalyData = await getAnomalyPointsById(anomalyID);
+
+  const coords = await mapBaseStationToCoords();
+
+  // for (let i = 1; i <= coords.size; i++) {
+  //  console.log("COOOOORODINATES" + coords.get(i));
+  //}
+
+  const lineLayer = new LineLayer<any>({
+    id: "LineLayer",
+    data: individualAnomalyData?.features,
+    getColor: (d: any) =>
+      signalStrengthGradient(d.properties.signalStrength).rgb(),
+    getSourcePosition: (d) => d.geometry.coordinates,
+    getTargetPosition: (d: any) =>
+      coords.get(d.properties.sourceId) ?? ([0, 0] as [number, number]),
+    getWidth: 12,
+    pickable: true,
+  });
+
+  return [anomalyGroupLayer, lineLayer];
+};
+
+/*
+function that creates a deckgl heat map layer based on featurecollection data sent in parameter.   
+*/
+export const heatMapLayer = ({ responseData }: anomalyGroupData) => {
+  const layer = new HeatmapLayer<any>({
     id: "HeatmapLayer",
     data: responseData.features,
     aggregation: "SUM",
@@ -49,7 +138,6 @@ export const heatMapLayer = ({ responseData }: boatData) => {
     getWeight: (d: any) => 1,
     radiusPixels: 40,
   });
-  console.log(responseData.features);
   return layer;
 };
 

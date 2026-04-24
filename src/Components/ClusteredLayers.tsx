@@ -18,24 +18,31 @@ import { HeatmapLayer } from "deck.gl/typed";
 import { feature, featureCollection } from "@turf/turf";
 import type { isAnyArrayBuffer } from "node:util/types";
 import Supercluster, {
-  type AnyProps,
   type ClusterFeature,
   type PointFeature,
+  type AnyProps,
 } from "supercluster";
+import type { GeoJsonProperties } from "geojson";
 import type { ShipInfoProps } from "./ShipInfo/ShipInfo";
 import { setShipInfoOnClick } from "../utils/MapInteractionUtils";
 import { iconLayer } from "./DeckLayers";
+import { anomalyGroupScatterPlotLayer } from "./DeckLayers";
+import type { VisType } from "../utils/activeVisContext";
 
 type boat = {
-  ShipName: string;
-  mmid: number;
+  mmsi: number;
   date: string;
   coordinates: [longitude: number, latitude: number];
 };
 
 interface clusteredBoatData {
-  clusters: (ClusterFeature<AnyProps> | PointFeature<AnyProps>)[];
+  clusters: (
+    | ClusterFeature<GeoJsonProperties>
+    | PointFeature<GeoJsonProperties>
+  )[];
 }
+
+let mmsi: string = "";
 
 export const clusteredIconLayer = (
   { clusters }: clusteredBoatData,
@@ -62,7 +69,7 @@ export const clusteredIconLayer = (
     onClick: (info, event) => {
       const pickedObject = info.object;
       if (pickedObject.properties.cluster === true) {
-        console.log("Point count:", pickedObject.properties.point_count);
+        // console.log("Point count:", pickedObject.properties.point_count);
       }
       if (pickedObject.properties.cluster !== true) {
         setShipInfoOnClick(setShipInfo, pickedObject);
@@ -75,8 +82,9 @@ export const clusteredIconLayer = (
 export const LabeledclusteredScatterPlotLayer = (
   { clusters }: clusteredBoatData,
   setShipInfo: Dispatch<SetStateAction<ShipInfoProps | undefined>>,
+  setActiveVis: (v: VisType) => void,
 ) => {
-  const scatterLayer = new ScatterplotLayer<
+  let scatterLayer = new ScatterplotLayer<
     PointFeature<AnyProps> | ClusterFeature<AnyProps>
   >({
     id: "ScatterplotLayer",
@@ -95,15 +103,17 @@ export const LabeledclusteredScatterPlotLayer = (
     radiusScale: 1,
     pickable: true,
 
-    onClick: (info, event) => {
+    onClick: async (info, event) => {
       const pickedObject = info.object;
       if (pickedObject.properties.cluster === true) {
-        console.log("Point count:", pickedObject.properties.point_count);
+        // console.log("Point count:", pickedObject.properties.point_count);
       }
 
       {
         if (pickedObject.properties.cluster !== true) {
+          setMmsiClick(pickedObject.properties.mmsi);
           setShipInfoOnClick(setShipInfo, pickedObject);
+          setActiveVis("anomalyGroup");
         }
       }
     },
@@ -151,3 +161,17 @@ function setDataSize(size: number, maxSize: number) {
 
   return normalized * (tmax - tmin) + tmin;
 }
+
+/*
+method that sets mmsi to the currently clicked anomaly group. 
+*/
+const setMmsiClick = (newMMSI: string) => {
+  mmsi = newMMSI;
+};
+
+/*
+returns the mmsi of the currently clicked anomaly group, for use in MapContainer to change layer when an anomaly group of 1 is clicked on. 
+*/
+export const getMmsiClick = (): string => {
+  return mmsi;
+};
