@@ -1,5 +1,3 @@
-
-
 export type SatellitePoint = {
   longitude: number;
   latitude: number;
@@ -8,18 +6,24 @@ export type SatellitePoint = {
 
 export const getClosestSatellitePoint = (
   points: SatellitePoint[],
-  targetTime: number,
+  targetTimeStr: string,
 ): SatellitePoint | null => {
     if (!points || points.length === 0) return null;
 
     // Find the start time to then calculate target time
-    const startTime = new Date(points[0].time).getTime();
+    // Seperate date from the time and turn into seconds (Making into seconds was an idea from AI)
+    const tragetDate = new Date(targetTimeStr)
+    const targetDateIntoSeconds = 
+        (tragetDate.getUTCHours() * 3600) +
+        (tragetDate.getUTCHours() * 60) +
+        tragetDate.getUTCSeconds();
 
-    // Functions use milliseconds
-    const interval = 60000;
+    // Since the data starts and ends at midnight setting the seconds to 0 works.
+    const startDateIntoSeconds = 0;
+    let diffSeconds = targetDateIntoSeconds - startDateIntoSeconds;
 
     // Calculate where in the index it is based on time
-    let index = Math.round((targetTime - startTime) / interval);
+    let index = Math.round((diffSeconds) / 60);
 
     // Makes sure the index is within the range.
     index = Math.max(0, Math.min(index, points.length -1));
