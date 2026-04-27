@@ -41,31 +41,3 @@ export const mapBaseStationToCoords = async () => {
 
   return indexToBaseStationCoords;
 };
-
-// Function to filter id 1-7 as base stations and 8 as sattelite
-export const getSourceCoordinate = (
-  sourceId: number,
-  baseStationMap: Map<number, [number, number]>,
-  pointTimeStr: string 
-): [number, number] | null => {
-  
-  // Base Stations (1-7)
-  if (sourceId >= 1 && sourceId <= 7) {
-    return baseStationMap.get(sourceId) || null;
-  }
-  
-  // Satellite (8)
-  if (sourceId === 8 && pointTimeStr) {
-    const targetTimeMs = new Date(pointTimeStr).getTime();
-    const satPoint = getClosestSatellitePoint(
-      satelliteDataJson as any, 
-      targetTimeMs
-    );
-    
-    if (satPoint) {
-      return[satPoint.longitude, satPoint.latitude];
-    }
-  }
-  
-  return null;
-};
