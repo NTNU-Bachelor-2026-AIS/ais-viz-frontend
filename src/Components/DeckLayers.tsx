@@ -19,6 +19,10 @@ import { mapBaseStationToCoords } from "../utils/MapInteractionUtils";
 import { signalStrengthGradient } from "../utils/ColorGradientUtils";
 
 /*
+File responsible for creating DeckGlLayers that are not clustered. 
+*/
+
+/*
 interface creating a type of featurecollection called responsedata which will be used for creating layers 
 */
 interface anomalyGroupData {

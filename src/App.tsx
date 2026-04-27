@@ -33,6 +33,7 @@ function App() {
   const shipInfoContextValue = { shipInfoProps, setShipInfoProps };
   const [activeVis, setActiveVis] = useState<VisType>("clustering");
 
+  //Fetch anoamly group from api.
   useEffect(() => {
     const fetchAnomalyData = async () => {
       try {
@@ -45,6 +46,7 @@ function App() {
     fetchAnomalyData();
   }, []);
 
+  //fetch base stations from api.
   useEffect(() => {
     const baseStationData = async () => {
       const baseStations = await getBaseStations();
@@ -54,6 +56,7 @@ function App() {
     baseStationData();
   }, []);
 
+  //fetch individual anomaly groups. 
   const fetchAnomalies = async (filters: any) => {
     const activeFilters = Object.fromEntries(Object.entries(filters));
 

@@ -28,6 +28,9 @@ interface LibreMapProps {
   baseStations: FeatureCollection<Point>;
 }
 
+/*
+exports a libremap sending down props to mapcontainer that is responsible for creating map and maintaining it. 
+*/
 export const LibreMap = ({
   responseData,
   shipInfoContextValue,

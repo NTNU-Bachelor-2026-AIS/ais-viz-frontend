@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import "./ShipInfo.css";
 import { shipInfoContext } from "./ShipInfoContext.tsx";
 
-// Interface for future props
+// Interface for shipinfo.
 export interface ShipInfoProps {
   id?: string;
   lastActivityAt?: string;
@@ -13,7 +13,7 @@ export interface ShipInfoProps {
 }
 
 /*
-ShipInfo component that will be a card to show information on ship and location when pressing its anomaly. 
+ShipInfo component that will be a card to show information on ship and location when pressing its anomaly group. 
 */
 const ShipInfo = () => {
   const shipInfo = useContext(shipInfoContext);

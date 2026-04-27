@@ -11,12 +11,18 @@ import { SideBarListItemDetails } from "./SideBarListItemDetails";
 import { getMMSI, getTypeFromString } from "../../api/posts";
 import { debounce } from "lodash";
 
+/*
+ Sidebar of the app that can search for various anomaly groups. 
+*/
+
+//props for sidebar containing responsedata as featurecollection.
 interface sideBarProps {
   responseData: FeatureCollection<Point>;
 }
 
 type SearchType = "ANOMALYTYPE" | "MMSI";
 
+// sidebare component that can filter and change based on used input.
 export const SideBar = ({ responseData }: sideBarProps) => {
   const [query, setquery] = useState("");
   const [anomaly, setAnomaly] = useState<Feature<
@@ -29,12 +35,14 @@ export const SideBar = ({ responseData }: sideBarProps) => {
   const [dropDownSelect, setDropDownSelect] =
     useState<SearchType>("ANOMALYTYPE");
 
+  //useeffect that changes list in sidebar based on responsedata changing.
   useEffect(() => {
     if (responseData.features.length != null) {
       setFilterList(responseData);
     }
   }, [responseData]);
 
+  // method that hanldes search asynchronously, checks the dropdown selected by user and changes based on search string.
   const handleSearch = async (searchString: string) => {
     let posts: FeatureCollection<Point, GeoJsonProperties> | undefined;
     if (searchString === "" && filterList != responseData) {
@@ -53,15 +61,18 @@ export const SideBar = ({ responseData }: sideBarProps) => {
     }
   };
 
+  //debounces the search, currently by 2 seconds.
   const debouncedHandleSearch = useCallback(debounce(handleSearch, 2000), [
     responseData,
     dropDownSelect,
   ]);
 
+  // hanldes itemclick by setting anomaly to e.
   const handleItemClick = (e: Feature<Point, GeoJsonProperties> | null) => {
     setAnomaly(e);
   };
 
+  //sidebar with search container.
   return (
     <aside className="boat-sidebar">
       {/* Search Bar */}

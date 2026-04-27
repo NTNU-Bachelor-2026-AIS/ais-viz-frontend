@@ -2,6 +2,9 @@ import { useContext } from "react";
 import { LayerContext } from "../../utils/activeVisContext.tsx";
 import type { VisType } from "../LibreMap.tsx";
 
+/*
+Macontrols is a component responsible for changing visualization type, used as filtering component. 
+*/
 export const MapControls = () => {
   const context = useContext(LayerContext);
   return (

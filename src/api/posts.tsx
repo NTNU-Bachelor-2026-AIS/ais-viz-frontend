@@ -41,7 +41,6 @@ export const getAnomalyPointsById = async (
   }
 };
 
-
 /*
 Method that makes api call to get a featurecollection of anomalies of specific type from input string. 
 */
@@ -94,8 +93,10 @@ export const getBaseStations = async (): Promise<FeatureCollection<Point>> => {
   }
 };
 
-
-export const getAnomalyGroupIndividualPoints = async (
+/*
+Method that gets invidual anomaly group from api. 
+*/
+export const getIndividualAnomalyGroup = async (
   mmsi: string,
 ): Promise<FeatureCollection<Point> | undefined> => {
   try {
