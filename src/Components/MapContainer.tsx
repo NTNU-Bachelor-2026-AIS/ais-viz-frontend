@@ -19,6 +19,10 @@ import type { ShipInfoProps } from "./ShipInfo/ShipInfo";
 import type { AnyProps, ClusterFeature, PointFeature } from "supercluster";
 import { LayerContext } from "../utils/activeVisContext.tsx";
 import { anomalyGroupScatterPlotLayer } from "./DeckLayers.tsx";
+// Imports for Sattelites
+import { getClosestSatellitePoint, type SatellitePoint } from "../utils/timeUtils";
+import { SatteliteStationIconLayer } from "./DeckLayers";
+import satelliteDataJson from "../data/satellite_24h.json"; 
 
 interface MapContainerProps {
   responseData?: FeatureCollection<Point>;

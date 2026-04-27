@@ -17,6 +17,7 @@ import { getMMSI, getAnomalyPointsById } from "../api/posts";
 import { type AnyProps } from "supercluster";
 import { mapBaseStationToCoords } from "../utils/MapInteractionUtils";
 import { signalStrengthGradient } from "../utils/ColorGradientUtils";
+import type { SatellitePoint } from "../utils/timeUtils";
 
 /*
 interface creating a type of featurecollection called responsedata which will be used for creating layers 
@@ -76,6 +77,30 @@ export const BaseStationIconLayer = ({ baseStations }: baseStationData) => {
 
     pickable: true,
   });
+  return layer;
+};
+
+/*
+function that creates a deckgl iconlayer specifically for the sattelite base stations of the project, with their own svg. 
+gets a featurecollection in parameter that it will create the layer out of 
+*/
+export const SatteliteStationIconLayer = (activePoint: SatellitePoint | null) => {
+  
+  const layer = new IconLayer<any>({
+    id: "sattelite-layer",
+    data: [activePoint],
+    getColor: (d: any) => [0, 0, 255],
+    getIcon: () => ({
+      url: "/ais-viz-frontend/public/icons/BaseStation.svg",
+      width: 30,
+      height: 30,
+      mask: true,
+    }),
+    getPosition: (d: any) => [d.longitude, d.latitude],
+    getSize: 40,
+    pickable: true,
+  });
+
   return layer;
 };
 
