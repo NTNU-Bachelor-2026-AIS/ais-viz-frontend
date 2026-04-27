@@ -51,6 +51,15 @@ export const MapContainer = ({
   const [activeLayers, setActiveLayers] = useState<any[]>([]);
   const [selectedMMSI, setSelectedMMSi] = useState<string>("");
 
+  // Only when a ship is clicked is it updated
+  const activeSattelitePoint = useMemo(() => {
+    const timeStr = shipInfoContextValue?.shipInfoProps?.lastActivityAt;
+    if (!timeStr) return null;
+    return getClosestSatellitePoint(satelliteDataJson as SatellitePoint[], timeStr);
+  }, [shipInfoContextValue?.shipInfoProps?.lastActivityAt]);
+
+  
+
   // Cluster Index is only created when Responsedata changes
   const clusterIndex = useMemo(() => {
     if (!responseData) return null;
