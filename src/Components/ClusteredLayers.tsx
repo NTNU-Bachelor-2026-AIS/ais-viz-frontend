@@ -29,12 +29,13 @@ import { iconLayer } from "./DeckLayers";
 import { anomalyGroupScatterPlotLayer } from "./DeckLayers";
 import type { VisType } from "../utils/activeVisContext";
 
-type boat = {
-  mmsi: number;
-  date: string;
-  coordinates: [longitude: number, latitude: number];
-};
+/*
+File responsible for creating deckGL layers that are clustered based on supercluster.js. 
+*/
 
+/*
+Represents clustered geojson data. 
+*/
 interface clusteredBoatData {
   clusters: (
     | ClusterFeature<GeoJsonProperties>
@@ -42,8 +43,14 @@ interface clusteredBoatData {
   )[];
 }
 
+/*
+local mmsi variable for other files to call get method on. 
+*/
 let mmsi: string = "";
 
+/*
+Clustered Iconlayer creates a iconlayer that works on clustered data. not used in current implementation.
+*/
 export const clusteredIconLayer = (
   { clusters }: clusteredBoatData,
   setShipInfo?: Dispatch<SetStateAction<ShipInfoProps | undefined>>,
@@ -79,6 +86,10 @@ export const clusteredIconLayer = (
   return layer;
 };
 
+/*
+LabeledClusteredScatterplotlayer is a layer that is a clustered scatterplot layer combined with a labellayer that for each cluster says 
+how many anomaly groups are inside it. 
+*/
 export const LabeledclusteredScatterPlotLayer = (
   { clusters }: clusteredBoatData,
   setShipInfo: Dispatch<SetStateAction<ShipInfoProps | undefined>>,
@@ -103,6 +114,9 @@ export const LabeledclusteredScatterPlotLayer = (
     radiusScale: 1,
     pickable: true,
 
+    /*
+      onClick sets mmsi and active visualization and shipinfo. 
+      */
     onClick: async (info, event) => {
       const pickedObject = info.object;
       if (pickedObject.properties.cluster === true) {
@@ -119,6 +133,9 @@ export const LabeledclusteredScatterPlotLayer = (
     },
   });
 
+  /*
+  labelLayer that adds a point counter to the scatterlayer. 
+ */
   const labelLayer = new TextLayer<
     ClusterFeature<AnyProps> | PointFeature<AnyProps>
   >({
@@ -133,6 +150,7 @@ export const LabeledclusteredScatterPlotLayer = (
 
   return [scatterLayer, labelLayer];
 };
+
 /*
   calculates the max cluster size, to be used in the normalization method so that max cluster size is used in computing clusters
   */

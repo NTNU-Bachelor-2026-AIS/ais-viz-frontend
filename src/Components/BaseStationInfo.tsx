@@ -9,6 +9,9 @@ interface BaseStationInfoProps {
   feature: Feature<Point, GeoJsonProperties>;
 }
 
+/*
+unused class copied from sidebatlistitemdetails, todo(maybe change this and use it for something)
+*/
 export const SideBarListItemDetails = ({ feature }: BaseStationInfoProps) => {
   return (
     <div className="baseStation-details">

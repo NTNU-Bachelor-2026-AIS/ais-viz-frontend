@@ -5,10 +5,16 @@ import type {
   Point,
 } from "geojson";
 
+/*
+SidebarListItemDetails is used in sidebar when clicking an anomaly group to show details of that group as this component.
+*/
+
+//prop that has the feature that the user clicks on.
 interface SideBarListItemDetailsProps {
   feature: Feature<Point, GeoJsonProperties>;
 }
 
+//item detail component.
 export const SideBarListItemDetails = ({
   feature,
 }: SideBarListItemDetailsProps) => {

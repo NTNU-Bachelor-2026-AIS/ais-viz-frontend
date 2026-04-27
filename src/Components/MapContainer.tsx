@@ -20,6 +20,16 @@ import type { AnyProps, ClusterFeature, PointFeature } from "supercluster";
 import { LayerContext } from "../utils/activeVisContext.tsx";
 import { anomalyGroupScatterPlotLayer } from "./DeckLayers.tsx";
 
+
+/*
+ MapContainer is the file responsible for handling the maplibre instance, creating it and handling its layers based on other files. 
+*/
+
+
+
+/*
+Interface of props mapcontainer needs like responsedata, basestations etc. 
+*/
 interface MapContainerProps {
   responseData?: FeatureCollection<Point>;
   shipInfoContextValue?: {
@@ -31,6 +41,9 @@ interface MapContainerProps {
   baseStations: FeatureCollection<Point, GeoJsonProperties>;
 }
 
+/*
+Function that creates mapcontainer instance, creating maplibre and handling map related tasks.
+*/
 export const MapContainer = ({
   shipInfoContextValue,
   responseData,
@@ -53,6 +66,7 @@ export const MapContainer = ({
     return CreateCluster(responseData as any);
   }, [responseData]);
 
+  //useeffect creating the maplibre instance on starting website. taken online from maplibre example.
   useEffect(() => {
     if (mapRef.current) return;
     // console.log("rerender of mapitself");
@@ -65,6 +79,7 @@ export const MapContainer = ({
     });
   }, []);
 
+  // useeffect creating deckoverlayref that is setting itself to a mapboxoverlay so we can add layers and change props.
   useEffect(() => {
     if (!mapRef.current) return;
     mapRef.current.on("load", () => {
@@ -78,7 +93,7 @@ export const MapContainer = ({
     });
   }, [overLayReady]);
 
-  //kind of sloppy useeffecct to look for change in zoom and bounds after a move. think about refactoring later
+  //useeffecct to look for change in zoom and bounds after a move.
   useEffect(() => {
     if (!mapRef.current) return;
     mapRef.current.on("moveend", () => {
@@ -95,6 +110,9 @@ export const MapContainer = ({
     });
   }, []);
 
+  /*
+Useeffect looking at activevis and changing visualization based on its value, used for filtering etc. 
+*/
   useEffect(() => {
     if (!mapRef.current || !shipInfoContextValue || !deckOverlayRef.current)
       return;
@@ -132,6 +150,9 @@ export const MapContainer = ({
     context?.activeVis,
   ]);
 
+  /*
+Useeffect responsible for creating a layer when use selects mmsi. 
+*/
   useEffect(() => {
     //  console.log("selectedmmsi useffect called ");
     if (!deckOverlayRef.current) return;
@@ -148,6 +169,9 @@ export const MapContainer = ({
     getAnomalyGroup();
   }, [selectedMMSI]);
 
+  /*
+useeffect for changing active layer based on activelayers variable. 
+*/
   useEffect(() => {
     if (!deckOverlayRef.current) return;
     //   console.log("activelayers useffect called");
