@@ -8,7 +8,7 @@ import type {
 } from "geojson";
 import type { Point } from "geojson";
 import { SideBarListItemDetails } from "./SideBarListItemDetails";
-import { getMMSI, getTypeFromString } from "../../api/posts";
+import { getAnomalyGroupByMMSI, getTypeFromString } from "../../api/posts";
 import { debounce } from "lodash";
 
 /*
@@ -53,7 +53,7 @@ export const SideBar = ({ responseData }: sideBarProps) => {
       }
 
       if (dropDownSelect == "MMSI") {
-        posts = await getMMSI(searchString);
+        posts = await getAnomalyGroupByMMSI(searchString);
       }
       if (Array.isArray(posts?.features) && posts.features.length > 0) {
         setFilterList(posts);

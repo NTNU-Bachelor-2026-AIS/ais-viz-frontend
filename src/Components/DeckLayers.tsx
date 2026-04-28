@@ -13,7 +13,7 @@ import { IconLayer } from "@deck.gl/layers/typed";
 import { HeatmapLayer } from "deck.gl/typed";
 import { feature, featureCollection } from "@turf/turf";
 import type { isAnyArrayBuffer } from "node:util/types";
-import { getMMSI, getAnomalyPointsById } from "../api/posts";
+import { getAnomalyGroupByMMSI, getAnomalyPointsById } from "../api/posts";
 import { type AnyProps } from "supercluster";
 import { mapBaseStationToCoords } from "../utils/MapInteractionUtils";
 import { signalStrengthGradient } from "../utils/ColorGradientUtils";
@@ -89,7 +89,7 @@ points inside of the anomaly group tied to their basestation
 basestation coordinates are hardcoded in MapInteractionUtiLS. 
 */
 export const anomalyGroupScatterPlotLayer = async (mmsi: string) => {
-  const anomalyData = await getMMSI(mmsi);
+  const anomalyData = await getAnomalyGroupByMMSI(mmsi);
   console.log("anomalydata features " + anomalyData?.features);
   const features = anomalyData?.features;
 
@@ -128,6 +128,31 @@ export const anomalyGroupScatterPlotLayer = async (mmsi: string) => {
   });
 
   return [anomalyGroupLayer, lineLayer];
+};
+
+export const individualAnomalyLayer = async (id: string) => {
+  const anomalyData = await getAnomalyPointsById(id);
+  console.log("anomalydata features " + anomalyData?.features);
+  const features = anomalyData?.features;
+  const anomalyGroupLayer = new ScatterplotLayer<any>({
+    id: "scatterPlotLayer",
+    data: anomalyData?.features,
+    getPosition: (d: any) => d.geometry.coordinates,
+    getRadius: 600,
+    getFillColor: (d:any) => signalStrengthGradient(d.signalStrength).rgb(),
+    getLineColor: [0, 0, 0],
+    getLineWidth: 10,
+    radiusScale: 60,
+    pickable: true,
+  });
+
+  const anomalyID = features?.[0]?.properties?.id;
+
+  const individualAnomalyData = await getAnomalyPointsById(anomalyID);
+
+  const coords = await mapBaseStationToCoords();
+
+  return anomalyGroupLayer;
 };
 
 /*

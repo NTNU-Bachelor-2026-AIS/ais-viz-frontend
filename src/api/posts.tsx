@@ -10,7 +10,7 @@ export const api = axios.create({
 /*
 function that returns an anomaly group based on mmsi. 
 */
-export const getMMSI = async (
+export const getAnomalyGroupByMMSI = async (
   mmsi: string,
 ): Promise<FeatureCollection<Point> | undefined> => {
   try {

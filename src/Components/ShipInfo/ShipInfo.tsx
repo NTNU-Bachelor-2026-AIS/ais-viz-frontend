@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import "./ShipInfo.css";
 import { shipInfoContext } from "./ShipInfoContext.tsx";
+import { LayerContext } from "../../utils/activeVisContext.tsx";
 
 // Interface for shipinfo.
 export interface ShipInfoProps {
@@ -15,8 +16,9 @@ export interface ShipInfoProps {
 /*
 ShipInfo component that will be a card to show information on ship and location when pressing its anomaly group. 
 */
-const ShipInfo = ({ onClose }) => {
+const ShipInfo = () => {
   const shipInfo = useContext(shipInfoContext);
+  const visContext = useContext(LayerContext);
 
   if (shipInfo) {
     console.log(
@@ -37,7 +39,7 @@ const ShipInfo = ({ onClose }) => {
   if (!shipInfo?.shipInfoProps)
     return null; // code taken from https://stackoverflow.com/questions/65750698/check-if-props-are-undefined-when-loading-component
   else
-    return (
+    return shipInfo ? (
       <div className="ship-card">
         {/* Top Image Section */}
         <div className="card-image-wrapper">
@@ -47,7 +49,15 @@ const ShipInfo = ({ onClose }) => {
             className="ship-image"
           />
         </div>
-        <button className="close-btn" onClick={onClose}>X</button>
+        <button
+          className="close-btn"
+          onClick={() => {
+            visContext?.setActiveVis("clustering");
+            shipInfo.setShipInfoProps(undefined);
+          }}
+        >
+          X
+        </button>
 
         {/* Scrollable Content Section */}
         <div className="card-content">
@@ -78,10 +88,18 @@ const ShipInfo = ({ onClose }) => {
             <p>New features later ?. </p>
           </div>
 
-          <button className="show-button">Show Anomalies</button>
+          <button
+            className="show-button"
+            onClick={() => {
+              visContext?.setActiveVis("individualAnomaly");
+              shipInfo.setShipInfoProps(undefined);
+            }}
+          >
+            Show Anomalies
+          </button>
         </div>
       </div>
-    );
+    ) : null;
 };
 
 export default ShipInfo;

@@ -12,20 +12,22 @@ import { CreateCluster, getClusters } from "../utils/SuperClusterUtils";
 import {
   LabeledclusteredScatterPlotLayer,
   getMmsiClick,
+  getIdClick,
 } from "./ClusteredLayers";
 import type { shipInfoContextPropS } from "./ShipInfo/ShipInfoContext";
 //import cluster from "cluster";
 import type { ShipInfoProps } from "./ShipInfo/ShipInfo";
 import type { AnyProps, ClusterFeature, PointFeature } from "supercluster";
 import { LayerContext } from "../utils/activeVisContext.tsx";
-import { anomalyGroupScatterPlotLayer } from "./DeckLayers.tsx";
-
+import {
+  anomalyGroupScatterPlotLayer,
+  individualAnomalyLayer,
+} from "./DeckLayers.tsx";
+import { getAnomalyGroupByMMSI } from "../api/posts.tsx";
 
 /*
  MapContainer is the file responsible for handling the maplibre instance, creating it and handling its layers based on other files. 
 */
-
-
 
 /*
 Interface of props mapcontainer needs like responsedata, basestations etc. 
@@ -118,6 +120,7 @@ Useeffect looking at activevis and changing visualization based on its value, us
       return;
 
     if (context?.activeVis === "clustering" && clusterIndex) {
+      setSelectedMMSi("");
       let clusters = getClusters(zoom, bounds, clusterIndex) ?? [];
       setActiveLayers([
         BaseStationIconLayer({ baseStations }),
@@ -134,7 +137,13 @@ Useeffect looking at activevis and changing visualization based on its value, us
       ]);
     } else if (context?.activeVis === "anomalyGroup") {
       setSelectedMMSi(getMmsiClick());
-      //     console.log("MMMISISMSIMSIM" + selectedMMSI);
+    } else if (context?.activeVis === "individualAnomaly") {
+      console.log(" should go over to individual whyyyyy ");
+      setActiveLayers([
+        BaseStationIconLayer({ baseStations }),
+        individualAnomalyLayer(getIdClick()),
+      ]);
+      console.log( "individual anomaly layer", individualAnomalyLayer(getIdClick());
     }
 
     deckOverlayRef.current.setProps({
@@ -158,15 +167,17 @@ Useeffect responsible for creating a layer when use selects mmsi.
     if (!deckOverlayRef.current) return;
 
     let layer: any;
-    const getAnomalyGroup = async () => {
-      layer = await anomalyGroupScatterPlotLayer(selectedMMSI);
+    if (selectedMMSI != "") {
+      const getAnomalyGroup = async () => {
+        layer = await anomalyGroupScatterPlotLayer(selectedMMSI);
 
-      let nextLayers = [layer, BaseStationIconLayer({ baseStations })];
-      //  console.log("next layers " + nextLayers);
+        let nextLayers = [layer, BaseStationIconLayer({ baseStations })];
+        //  console.log("next layers " + nextLayers);
 
-      setActiveLayers(nextLayers);
-    };
-    getAnomalyGroup();
+        setActiveLayers(nextLayers);
+      };
+      getAnomalyGroup();
+    }
   }, [selectedMMSI]);
 
   /*

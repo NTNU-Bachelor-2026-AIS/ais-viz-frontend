@@ -3,7 +3,11 @@ import { createContext } from "react";
 /*
 VisType is a type that is what visualization methods that are allowed to change between. 
 */
-export type VisType = "clustering" | "heatmap" | "anomalyGroup";
+export type VisType =
+  | "clustering"
+  | "heatmap"
+  | "anomalyGroup"
+  | "individualAnomaly";
 
 /*
 interface that sets activevis that is of vistype and its setmethod. 
