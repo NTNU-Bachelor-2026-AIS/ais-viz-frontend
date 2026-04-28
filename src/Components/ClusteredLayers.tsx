@@ -47,6 +47,7 @@ interface clusteredBoatData {
 local mmsi variable for other files to call get method on. 
 */
 let mmsi: string = "";
+let anomalyId: string = "";
 
 /*
 Clustered Iconlayer creates a iconlayer that works on clustered data. not used in current implementation.
@@ -126,6 +127,8 @@ export const LabeledclusteredScatterPlotLayer = (
       {
         if (pickedObject.properties.cluster !== true) {
           setMmsiClick(pickedObject.properties.mmsi);
+          setAnomalyIdClick(pickedObject.properties.id);
+          console.log("INDIVDIAUL ANOMALY CLICK ", getIdClick());
           setShipInfoOnClick(setShipInfo, pickedObject);
           setActiveVis("anomalyGroup");
         }
@@ -157,7 +160,7 @@ export const LabeledclusteredScatterPlotLayer = (
 function calculateMaxClusterSize({ clusters }: clusteredBoatData) {
   const maxClusterSize = Math.max(
     ...clusters.map((d) =>
-      d.properties.cluster ? d.properties.point_count : 1,
+      d.properties?.cluster ? d.properties.point_count : 1,
     ),
   );
   return maxClusterSize;
@@ -187,9 +190,17 @@ const setMmsiClick = (newMMSI: string) => {
   mmsi = newMMSI;
 };
 
+const setAnomalyIdClick = (newId: string) => {
+  anomalyId = newId;
+};
+
 /*
 returns the mmsi of the currently clicked anomaly group, for use in MapContainer to change layer when an anomaly group of 1 is clicked on. 
 */
 export const getMmsiClick = (): string => {
   return mmsi;
+};
+
+export const getIdClick = (): string => {
+  return anomalyId;
 };
