@@ -58,7 +58,7 @@ export const MapContainer = ({
     return getClosestSatellitePoint(satelliteDataJson as SatellitePoint[], timeStr);
   }, [shipInfoContextValue?.shipInfoProps?.lastActivityAt]);
 
-  
+
 
   // Cluster Index is only created when Responsedata changes
   const clusterIndex = useMemo(() => {
@@ -151,9 +151,13 @@ export const MapContainer = ({
 
     let layer: any;
     const getAnomalyGroup = async () => {
-      layer = await anomalyGroupScatterPlotLayer(selectedMMSI);
+      layer = await anomalyGroupScatterPlotLayer(selectedMMSI, activeSattelitePoint);
 
-      let nextLayers = [layer, BaseStationIconLayer({ baseStations })];
+      let nextLayers = [
+        layer, 
+        BaseStationIconLayer({ baseStations }),
+        SatteliteStationIconLayer(activeSattelitePoint)
+      ];
       //  console.log("next layers " + nextLayers);
 
       setActiveLayers(nextLayers);
