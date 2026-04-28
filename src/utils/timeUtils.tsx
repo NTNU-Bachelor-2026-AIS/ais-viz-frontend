@@ -15,7 +15,7 @@ export const getClosestSatellitePoint = (
     const tragetDate = new Date(targetTimeStr)
     const targetDateIntoSeconds = 
         (tragetDate.getUTCHours() * 3600) +
-        (tragetDate.getUTCHours() * 60) +
+        (tragetDate.getUTCMinutes() * 60) +
         tragetDate.getUTCSeconds();
 
     // Since the data starts and ends at midnight setting the seconds to 0 works.
