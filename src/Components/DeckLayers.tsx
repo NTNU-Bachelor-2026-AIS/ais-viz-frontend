@@ -158,10 +158,10 @@ export const anomalyGroupScatterPlotLayer = async (
     pickable: true,
   });
 
-  /**
+  
   const satteliteLayer = new LineLayer<any>({
     id: "SatteliteLineLayer",
-    data: individualAnomalyData?.features.filter((d: any) => d.properties.sourceId == 8),
+    data: features,
     getColor: (d: any) =>
       signalStrengthGradient(d.properties.signalStrength).rgb(),
     getSourcePosition: (d) => d.geometry.coordinates,
@@ -174,9 +174,9 @@ export const anomalyGroupScatterPlotLayer = async (
     getWidth: 12,
     pickable: true,
   });
-  */
+  
 
-  return [anomalyGroupLayer, lineLayer /**,satteliteLayer*/];
+  return [anomalyGroupLayer, lineLayer ,satteliteLayer];
 };
 
 export const individualAnomalyLayer = async (id: string) => {
