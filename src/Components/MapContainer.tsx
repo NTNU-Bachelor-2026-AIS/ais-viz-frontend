@@ -68,6 +68,7 @@ export const MapContainer = ({
   const context = useContext(LayerContext);
   const [activeLayers, setActiveLayers] = useState<any[]>([]);
   const [selectedMMSI, setSelectedMMSi] = useState<string>("");
+  const [selectedAnomalyId, setSelectedAnomalyId] = useState<string>("");
 
   // Only when a ship is clicked is it updated
   const activeSattelitePoint = useMemo(() => {
@@ -138,6 +139,7 @@ Useeffect looking at activevis and changing visualization based on its value, us
 
     if (context?.activeVis === "clustering" && clusterIndex) {
       setSelectedMMSi("");
+      setSelectedAnomalyId("");
       let clusters = getClusters(zoom, bounds, clusterIndex) ?? [];
       setActiveLayers([
         BaseStationIconLayer({ baseStations }),
@@ -148,24 +150,17 @@ Useeffect looking at activevis and changing visualization based on its value, us
         ),
       ]);
     } else if (context?.activeVis === "heatmap" && responseData) {
+      setSelectedAnomalyId("");
       setActiveLayers([
         heatMapLayer({ responseData }),
         BaseStationIconLayer({ baseStations }),
       ]);
     } else if (context?.activeVis === "anomalyGroup") {
+      setSelectedAnomalyId("");
       setSelectedMMSi(getMmsiClick());
     } else if (context?.activeVis === "individualAnomaly") {
-      console.log(" should go over to individual whyyyyy ");
-      setActiveLayers([
-        BaseStationIconLayer({ baseStations }),
-        individualAnomalyLayer(getIdClick()),
-      ]);
-      console.log( "individual anomaly layer", individualAnomalyLayer(getIdClick()));
+      setSelectedAnomalyId(getIdClick());
     }
-
-    deckOverlayRef.current.setProps({
-      layers: activeLayers,
-    });
   }, [
     bounds,
     zoom,
@@ -203,6 +198,22 @@ Useeffect responsible for creating a layer when use selects mmsi.
       getAnomalyGroup();
     }
   }, [selectedMMSI]);
+
+  useEffect(() => {
+    //  console.log("selectedmmsi useffect called ");
+    if (!deckOverlayRef.current) return;
+
+    let layer: any;
+    if (selectedAnomalyId != "") {
+      const loadLayer = async () => {
+        const layer = await individualAnomalyLayer(getIdClick(), zoom);
+
+        setActiveLayers([BaseStationIconLayer({ baseStations }), layer]);
+      };
+
+      loadLayer();
+    }
+  }, [selectedAnomalyId, zoom]);
 
   /*
 useeffect for changing active layer based on activelayers variable. 
