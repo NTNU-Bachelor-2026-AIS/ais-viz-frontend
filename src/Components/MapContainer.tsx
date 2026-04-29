@@ -156,7 +156,7 @@ Useeffect looking at activevis and changing visualization based on its value, us
         BaseStationIconLayer({ baseStations }),
         individualAnomalyLayer(getIdClick()),
       ]);
-      console.log( "individual anomaly layer", individualAnomalyLayer(getIdClick());
+      console.log( "individual anomaly layer", individualAnomalyLayer(getIdClick()));
     }
 
     deckOverlayRef.current.setProps({

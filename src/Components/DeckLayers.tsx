@@ -119,7 +119,7 @@ export const anomalyGroupScatterPlotLayer = async (
   mmsi: string, 
   activeSatellitePoint?: SatellitePoint | null
 ) => {
-  const anomalyData = await getMMSI(mmsi);
+  const anomalyData = await getAnomalyGroupByMMSI(mmsi);
   console.log("anomalydata features " + anomalyData?.features);
   const features = anomalyData?.features;
 
