@@ -90,11 +90,12 @@ export const BaseStationIconLayer = ({ baseStations }: baseStationData) => {
 function that creates a deckgl iconlayer specifically for the sattelite base stations of the project, with their own svg. 
 gets a featurecollection in parameter that it will create the layer out of 
 */
-export const SatteliteStationIconLayer = (activePoint: SatellitePoint | null) => {
-  
+export const SatteliteStationIconLayer = (
+  activePoint: SatellitePoint | null,
+) => {
   const layer = new IconLayer<any>({
     id: "sattelite-layer",
-    data: activePoint ? [activePoint] :[],
+    data: activePoint ? [activePoint] : [],
     getColor: (d: any) => [0, 0, 255],
     getIcon: () => ({
       url: baseStationIconUrl,
@@ -116,8 +117,9 @@ points inside of the anomaly group tied to their basestation
 basestation coordinates are hardcoded in MapInteractionUtiLS. 
 */
 export const anomalyGroupScatterPlotLayer = async (
-  mmsi: string, 
-  activeSatellitePoint?: SatellitePoint | null
+  mmsi: string,
+  activeSatellitePoint?: SatellitePoint | null,
+  activePoint: SatellitePoint | null,
 ) => {
   const anomalyData = await getAnomalyGroupByMMSI(mmsi);
   console.log("anomalydata features " + anomalyData?.features);
@@ -145,7 +147,7 @@ export const anomalyGroupScatterPlotLayer = async (
   //  console.log("COOOOORODINATES" + coords.get(i));
   //}
 
-  const lineLayer = new LineLayer<any>({
+  const signalStrengthLayer = new LineLayer<any>({
     id: "LineLayer",
     data: individualAnomalyData?.features,
     getColor: (d: any) =>
@@ -154,7 +156,7 @@ export const anomalyGroupScatterPlotLayer = async (
     getTargetPosition: (d: any) => {
       const sourceId = d.properties.sourceId;
       if (sourceId && activeSatellitePoint) {
-        return[activeSatellitePoint.longitude, activeSatellitePoint.latitude];
+        return [activeSatellitePoint.longitude, activeSatellitePoint.latitude];
       }
       return coords.get(d.properties.sourceId) ?? ([0, 0] as [number, number]);
     },
@@ -162,7 +164,12 @@ export const anomalyGroupScatterPlotLayer = async (
     pickable: true,
   });
 
-  return [anomalyGroupLayer, lineLayer];
+  console.log("individual anomaly data ", individualAnomalyData?.features);
+
+  console.log("activepoint longitude ", activePoint?.longitude);
+  console.log("activepoint latitude ", activePoint?.latitude);
+
+  return [anomalyGroupLayer, signalStrengthLayer];
 };
 
 export const individualAnomalyLayer = async (id: string) => {
@@ -174,7 +181,7 @@ export const individualAnomalyLayer = async (id: string) => {
     data: anomalyData?.features,
     getPosition: (d: any) => d.geometry.coordinates,
     getRadius: 600,
-    getFillColor: (d:any) => signalStrengthGradient(d.signalStrength).rgb(),
+    getFillColor: (d: any) => signalStrengthGradient(d.signalStrength).rgb(),
     getLineColor: [0, 0, 0],
     getLineWidth: 10,
     radiusScale: 60,
