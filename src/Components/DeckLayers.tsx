@@ -152,8 +152,21 @@ export const anomalyGroupScatterPlotLayer = async (
       signalStrengthGradient(d.properties.signalStrength).rgb(),
     getSourcePosition: (d) => d.geometry.coordinates,
     getTargetPosition: (d: any) => {
-      const sourceId = d.properties.sourceId;
-      if (sourceId && activeSatellitePoint) {
+      return coords.get(d.properties.sourceId) ?? ([0, 0] as [number, number]);
+    },
+    getWidth: 12,
+    pickable: true,
+  });
+
+  /**
+  const satteliteLayer = new LineLayer<any>({
+    id: "SatteliteLineLayer",
+    data: individualAnomalyData?.features.filter((d: any) => d.properties.sourceId == 8),
+    getColor: (d: any) =>
+      signalStrengthGradient(d.properties.signalStrength).rgb(),
+    getSourcePosition: (d) => d.geometry.coordinates,
+    getTargetPosition: (d: any) => {
+      if (activeSatellitePoint) {
         return[activeSatellitePoint.longitude, activeSatellitePoint.latitude];
       }
       return coords.get(d.properties.sourceId) ?? ([0, 0] as [number, number]);
@@ -161,8 +174,9 @@ export const anomalyGroupScatterPlotLayer = async (
     getWidth: 12,
     pickable: true,
   });
+  */
 
-  return [anomalyGroupLayer, lineLayer];
+  return [anomalyGroupLayer, lineLayer /**,satteliteLayer*/];
 };
 
 export const individualAnomalyLayer = async (id: string) => {
