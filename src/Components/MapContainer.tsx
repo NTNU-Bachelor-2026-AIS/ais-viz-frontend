@@ -19,6 +19,10 @@ import type { ShipInfoProps } from "./ShipInfo/ShipInfo";
 import type { AnyProps, ClusterFeature, PointFeature } from "supercluster";
 import { LayerContext } from "../utils/activeVisContext.tsx";
 import { anomalyGroupScatterPlotLayer } from "./DeckLayers.tsx";
+// Imports for Sattelites
+import { getClosestSatellitePoint, type SatellitePoint } from "../utils/timeUtils";
+import { SatteliteStationIconLayer } from "./DeckLayers";
+import satelliteDataJson from "../data/satellite_24h.json"; 
 
 
 /*
@@ -59,6 +63,15 @@ export const MapContainer = ({
   const context = useContext(LayerContext);
   const [activeLayers, setActiveLayers] = useState<any[]>([]);
   const [selectedMMSI, setSelectedMMSi] = useState<string>("");
+
+  // Only when a ship is clicked is it updated
+  const activeSattelitePoint = useMemo(() => {
+    const timeStr = shipInfoContextValue?.shipInfoProps?.lastActivityAt;
+    if (!timeStr) return null;
+    return getClosestSatellitePoint(satelliteDataJson as SatellitePoint[], timeStr);
+  }, [shipInfoContextValue?.shipInfoProps?.lastActivityAt]);
+
+
 
   // Cluster Index is only created when Responsedata changes
   const clusterIndex = useMemo(() => {
@@ -159,9 +172,13 @@ Useeffect responsible for creating a layer when use selects mmsi.
 
     let layer: any;
     const getAnomalyGroup = async () => {
-      layer = await anomalyGroupScatterPlotLayer(selectedMMSI);
+      layer = await anomalyGroupScatterPlotLayer(selectedMMSI, activeSattelitePoint);
 
-      let nextLayers = [layer, BaseStationIconLayer({ baseStations })];
+      let nextLayers = [
+        layer, 
+        BaseStationIconLayer({ baseStations }),
+        SatteliteStationIconLayer(activeSattelitePoint)
+      ];
       //  console.log("next layers " + nextLayers);
 
       setActiveLayers(nextLayers);

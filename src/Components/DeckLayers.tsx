@@ -17,6 +17,9 @@ import { getMMSI, getAnomalyPointsById } from "../api/posts";
 import { type AnyProps } from "supercluster";
 import { mapBaseStationToCoords } from "../utils/MapInteractionUtils";
 import { signalStrengthGradient } from "../utils/ColorGradientUtils";
+import type { SatellitePoint } from "../utils/timeUtils";
+
+import baseStationIconUrl from "../Icons/BaseStation.svg";
 
 /*
 File responsible for creating DeckGlLayers that are not clustered. 
@@ -70,7 +73,7 @@ export const BaseStationIconLayer = ({ baseStations }: baseStationData) => {
     data: baseStations.features,
     getColor: (d: any) => [0, 0, 255],
     getIcon: () => ({
-      url: "/ais-viz-frontend/public/icons/BaseStation.svg",
+      url: baseStationIconUrl,
       width: 30,
       height: 30,
       mask: true,
@@ -84,11 +87,38 @@ export const BaseStationIconLayer = ({ baseStations }: baseStationData) => {
 };
 
 /*
+function that creates a deckgl iconlayer specifically for the sattelite base stations of the project, with their own svg. 
+gets a featurecollection in parameter that it will create the layer out of 
+*/
+export const SatteliteStationIconLayer = (activePoint: SatellitePoint | null) => {
+  
+  const layer = new IconLayer<any>({
+    id: "sattelite-layer",
+    data: activePoint ? [activePoint] :[],
+    getColor: (d: any) => [0, 0, 255],
+    getIcon: () => ({
+      url: baseStationIconUrl,
+      width: 30,
+      height: 30,
+      mask: true,
+    }),
+    getPosition: (d: any) => [d.longitude, d.latitude],
+    getSize: 40,
+    pickable: true,
+  });
+
+  return layer;
+};
+
+/*
 Function that returns a layer that is made up of a scatterplot of an anomaly group and linelayers of signalstrength of the individual
 points inside of the anomaly group tied to their basestation 
 basestation coordinates are hardcoded in MapInteractionUtiLS. 
 */
-export const anomalyGroupScatterPlotLayer = async (mmsi: string) => {
+export const anomalyGroupScatterPlotLayer = async (
+  mmsi: string, 
+  activeSatellitePoint?: SatellitePoint | null
+) => {
   const anomalyData = await getMMSI(mmsi);
   console.log("anomalydata features " + anomalyData?.features);
   const features = anomalyData?.features;
@@ -121,8 +151,13 @@ export const anomalyGroupScatterPlotLayer = async (mmsi: string) => {
     getColor: (d: any) =>
       signalStrengthGradient(d.properties.signalStrength).rgb(),
     getSourcePosition: (d) => d.geometry.coordinates,
-    getTargetPosition: (d: any) =>
-      coords.get(d.properties.sourceId) ?? ([0, 0] as [number, number]),
+    getTargetPosition: (d: any) => {
+      const sourceId = d.properties.sourceId;
+      if (sourceId && activeSatellitePoint) {
+        return[activeSatellitePoint.longitude, activeSatellitePoint.latitude];
+      }
+      return coords.get(d.properties.sourceId) ?? ([0, 0] as [number, number]);
+    },
     getWidth: 12,
     pickable: true,
   });
