@@ -98,7 +98,7 @@ export const anomalyGroupScatterPlotLayer = async (mmsi: string) => {
     data: anomalyData?.features,
     getPosition: (d: any) => d.geometry.coordinates,
     getRadius: 600,
-    getFillColor: [255, 140, 0],
+    getFillColor: [0, 0, 0],
     getLineColor: [0, 0, 0],
     getLineWidth: 10,
     radiusScale: 60,
@@ -110,10 +110,6 @@ export const anomalyGroupScatterPlotLayer = async (mmsi: string) => {
   const individualAnomalyData = await getAnomalyPointsById(anomalyID);
 
   const coords = await mapBaseStationToCoords();
-
-  // for (let i = 1; i <= coords.size; i++) {
-  //  console.log("COOOOORODINATES" + coords.get(i));
-  //}
 
   const lineLayer = new LineLayer<any>({
     id: "LineLayer",
@@ -123,14 +119,19 @@ export const anomalyGroupScatterPlotLayer = async (mmsi: string) => {
     getSourcePosition: (d) => d.geometry.coordinates,
     getTargetPosition: (d: any) =>
       coords.get(d.properties.sourceId) ?? ([0, 0] as [number, number]),
-    getWidth: 12,
+    getWidth: 4,
+    widthScale: 2,
+    widthMinPixels: 1,
+    widthMaxPixels: 10,
+    opacity: 0.5,
+    rounded: true,
     pickable: true,
   });
 
   return [anomalyGroupLayer, lineLayer];
 };
 
-export const individualAnomalyLayer = async (id: string) => {
+export const individualAnomalyLayer = async (id: string, zoom: number) => {
   const anomalyData = await getAnomalyPointsById(id);
   console.log("anomalydata features " + anomalyData?.features);
   const features = anomalyData?.features;
@@ -138,19 +139,14 @@ export const individualAnomalyLayer = async (id: string) => {
     id: "scatterPlotLayer",
     data: anomalyData?.features,
     getPosition: (d: any) => d.geometry.coordinates,
-    getRadius: 600,
-    getFillColor: (d:any) => signalStrengthGradient(d.signalStrength).rgb(),
+    getRadius: getRadiusByZoom(zoom),
+    getFillColor: (d: any) =>
+      signalStrengthGradient(d.properties.signalStrength).rgb(),
     getLineColor: [0, 0, 0],
     getLineWidth: 10,
     radiusScale: 60,
     pickable: true,
   });
-
-  const anomalyID = features?.[0]?.properties?.id;
-
-  const individualAnomalyData = await getAnomalyPointsById(anomalyID);
-
-  const coords = await mapBaseStationToCoords();
 
   return anomalyGroupLayer;
 };
@@ -184,4 +180,16 @@ const returnArrayOfCoords = (d: Feature<Point>) => {
   coords[1] = y;
 
   return coords;
+};
+
+/*
+Hardcoded radius level by zoom. zoom will be sent down by mapcontainer. 
+*/
+const getRadiusByZoom = (zoom: number) => {
+  if (zoom <= 2) return 40000;
+  if (zoom <= 4) return 500;
+  if (zoom <= 6) return 150;
+  if (zoom <= 8) return 80;
+  if (zoom <= 10) return 40;
+  return 1;
 };
