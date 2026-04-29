@@ -138,7 +138,6 @@ Useeffect looking at activevis and changing visualization based on its value, us
     } else if (context?.activeVis === "anomalyGroup") {
       setSelectedMMSi(getMmsiClick());
     } else if (context?.activeVis === "individualAnomaly") {
-      console.log(" should go over to individual whyyyyy ");
       setActiveLayers([
         BaseStationIconLayer({ baseStations }),
         individualAnomalyLayer(getIdClick()),
