@@ -85,7 +85,6 @@ const ShipInfo = () => {
               <strong>Ships last activity at: </strong>{" "}
               {shipInfo?.shipInfoProps?.lastActivityAt}
             </p>
-            <p>New features later ?. </p>
           </div>
 
           <button
