@@ -79,7 +79,7 @@ export const BaseStationIconLayer = ({ baseStations }: baseStationData) => {
       mask: true,
     }),
     getPosition: (d: any) => d.geometry.coordinates,
-    getSize: 40,
+    getSize: 20,
 
     pickable: true,
   });
@@ -119,7 +119,6 @@ basestation coordinates are hardcoded in MapInteractionUtiLS.
 export const anomalyGroupScatterPlotLayer = async (
   mmsi: string,
   activeSatellitePoint?: SatellitePoint | null,
-  activePoint: SatellitePoint | null,
 ) => {
   const anomalyData = await getAnomalyGroupByMMSI(mmsi);
   console.log("anomalydata features " + anomalyData?.features);
@@ -144,8 +143,7 @@ export const anomalyGroupScatterPlotLayer = async (
   const coords = await mapBaseStationToCoords();
 
   const signalStrengthLayer = new LineLayer<any>({
-  const lineLayer = new LineLayer<any>({
-    id: "LineLayer",
+    id: "signalStrengthLayer",
     data: individualAnomalyData?.features,
     getColor: (d: any) =>
       signalStrengthGradient(d.properties.signalStrength).rgb(),
@@ -159,8 +157,20 @@ export const anomalyGroupScatterPlotLayer = async (
     opacity: 0.5,
     rounded: true,
     getTargetPosition: (d: any) => {
-      const sourceId = d.properties.sourceId;
-      if (sourceId && activeSatellitePoint) {
+      return coords.get(d.properties.sourceId) ?? ([0, 0] as [number, number]);
+    },
+    getWidth: 12,
+    pickable: true,
+  });
+
+  const satteliteLayer = new LineLayer<any>({
+    id: "SatteliteLineLayer",
+    data: features,
+    getColor: (d: any) =>
+      signalStrengthGradient(d.properties.signalStrength).rgb(),
+    getSourcePosition: (d) => d.geometry.coordinates,
+    getTargetPosition: (d: any) => {
+      if (activeSatellitePoint) {
         return [activeSatellitePoint.longitude, activeSatellitePoint.latitude];
       }
       return coords.get(d.properties.sourceId) ?? ([0, 0] as [number, number]);
@@ -169,12 +179,7 @@ export const anomalyGroupScatterPlotLayer = async (
     pickable: true,
   });
 
-  console.log("individual anomaly data ", individualAnomalyData?.features);
-
-  console.log("activepoint longitude ", activePoint?.longitude);
-  console.log("activepoint latitude ", activePoint?.latitude);
-
-  return [anomalyGroupLayer, signalStrengthLayer];
+  return [anomalyGroupLayer, signalStrengthLayer, satteliteLayer];
 };
 
 export const individualAnomalyLayer = async (id: string, zoom: number) => {
