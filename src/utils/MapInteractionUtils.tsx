@@ -36,7 +36,7 @@ export const mapBaseStationToCoords = async () => {
     [6, basestations.features[5].geometry.coordinates],
     [7, basestations.features[6].geometry.coordinates],
     // Sattelite
-    //[8, basestations.features[7].geometry.coordinates],
+    [8, basestations.features[7].geometry.coordinates],
   ]);
 
   return indexToBaseStationCoords;
