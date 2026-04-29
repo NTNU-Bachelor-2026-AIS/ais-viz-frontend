@@ -44,7 +44,7 @@ const ShipInfo = () => {
         {/* Top Image Section */}
         <div className="card-image-wrapper">
           <img
-            src="..\src\assets\Ship Fill.webp"
+            src="../ais-viz-frontend/src/assets/Ship%20Fill.webp"
             alt="Ship"
             className="ship-image"
           />

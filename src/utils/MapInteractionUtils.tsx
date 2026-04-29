@@ -3,6 +3,9 @@ import type { ShipInfoProps } from "../Components/ShipInfo/ShipInfo";
 import type { PickingInfo } from "@deck.gl/core";
 import { shipInfoContext } from "../Components/ShipInfo/ShipInfoContext";
 import { getBaseStations } from "../api/posts";
+// For sattelites
+import { getClosestSatellitePoint } from "./timeUtils";
+import satelliteDataJson from "../data/satellite_24h.json";
 
 type setShipInfoType = Dispatch<SetStateAction<ShipInfoProps | undefined>>;
 export const setShipInfoOnClick = (
@@ -32,6 +35,7 @@ export const mapBaseStationToCoords = async () => {
     [5, basestations.features[4].geometry.coordinates],
     [6, basestations.features[5].geometry.coordinates],
     [7, basestations.features[6].geometry.coordinates],
+    // Sattelite
     [8, basestations.features[7].geometry.coordinates],
   ]);
 
