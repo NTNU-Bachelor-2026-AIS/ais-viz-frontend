@@ -165,7 +165,7 @@ export const anomalyGroupScatterPlotLayer = async (
 
   const satteliteLayer = new LineLayer<any>({
     id: "SatteliteLineLayer",
-    data: features,
+    data: individualAnomalyData?.features,
     getColor: (d: any) =>
       signalStrengthGradient(d.properties.signalStrength).rgb(),
     getSourcePosition: (d) => d.geometry.coordinates,
@@ -173,9 +173,14 @@ export const anomalyGroupScatterPlotLayer = async (
       if (activeSatellitePoint) {
         return [activeSatellitePoint.longitude, activeSatellitePoint.latitude];
       }
-      return coords.get(d.properties.sourceId) ?? ([0, 0] as [number, number]);
+      //return coords.get(d.properties.sourceId) ?? ([0, 0] as [number, number]);
     },
-    getWidth: 12,
+    getWidth: 4,
+    widthScale: 2,
+    widthMinPixels: 1,
+    widthMaxPixels: 10,
+    opacity: 0.5,
+    rounded: true,
     pickable: true,
   });
 
