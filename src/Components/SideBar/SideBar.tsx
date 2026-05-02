@@ -10,6 +10,8 @@ import type { Point } from "geojson";
 import { SideBarListItemDetails } from "./SideBarListItemDetails";
 import { getAnomalyGroupByMMSI, getTypeFromString } from "../../api/posts";
 import { debounce } from "lodash";
+import { FixedSizeList as List } from "react-window";
+import type { ListChildComponentProps } from "react-window";
 
 /*
  Sidebar of the app that can search for various anomaly groups. 
@@ -72,6 +74,31 @@ export const SideBar = ({ responseData }: sideBarProps) => {
     setAnomaly(e);
   };
 
+  const Row = ({
+    index,
+    style,
+    data,
+  }: ListChildComponentProps<Feature<Point, GeoJsonProperties>[]>) => {
+    const feature = data[index];
+    return (
+      <div
+        style={style}
+        className="boat-item"
+        //  onClick={() => handleItemClick(feature)}
+      >
+        <span className="boat-id">ID : {feature.properties?.id},</span>
+        <span className="boat-mmsi"> MMSI: {feature.properties?.mmsi}</span>
+        <span className="anomaly-type"> : {feature.properties?.type}</span>
+        {feature.properties?.id ? (
+          <SideBarListItemDetails feature={feature} />
+        ) : null}{" "}
+        {/*  //
+      https://stackoverflow.com/questions/62517789/how-to-render-a-component-on-click-on-list-item-to-show-its-detail
+      here is code its based on. */}
+      </div>
+    );
+  };
+
   //sidebar with search container.
   return (
     <aside className="boat-sidebar">
@@ -100,33 +127,15 @@ export const SideBar = ({ responseData }: sideBarProps) => {
       </div>
 
       {/* Scrollable Content Section */}
-      <div className="list-container">
-        {filterList &&
-          filterList.features.length > 0 &&
-          filterList?.features.map((feature) => (
-            <div
-              key={feature.properties?.id}
-              className="boat-item"
-              onClick={() => handleItemClick(feature)}
-            >
-              <span className="boat-id">ID : {feature.properties?.id},</span>
-              <span className="boat-mmsi">
-                {" "}
-                MMSI: {feature.properties?.mmsi}
-              </span>
-              <span className="anomaly-type">
-                {" "}
-                : {feature.properties?.type}
-              </span>
-              {anomaly === feature ? (
-                <SideBarListItemDetails feature={feature} />
-              ) : null}{" "}
-              {/*  //
-              https://stackoverflow.com/questions/62517789/how-to-render-a-component-on-click-on-list-item-to-show-its-detail
-              here is code its based on. */}
-            </div>
-          ))}
-      </div>
+      <List
+        height={500}
+        width="100%"
+        itemSize={200}
+        itemCount={filterList?.features.length ?? 0}
+        itemData={filterList?.features ?? []}
+      >
+        {Row}
+      </List>
     </aside>
   );
 };
