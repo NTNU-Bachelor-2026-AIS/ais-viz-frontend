@@ -12,6 +12,7 @@ import { shipInfoContext } from "./Components/ShipInfo/ShipInfoContext";
 import { getFilteredAnomalies } from "./api/posts";
 import { FilterList } from "./Components/FilterList/FilterList";
 import { LayerContext } from "./utils/activeVisContext";
+import { BackToAnomalyGroupButton } from "./Components/BackButton/BackToAnomalyClusterButton";
 
 /* root component of the app
  */
@@ -56,7 +57,7 @@ function App() {
     baseStationData();
   }, []);
 
-  //fetch individual anomaly groups. 
+  //fetch individual anomaly groups.
   const fetchAnomalies = async (filters: any) => {
     const activeFilters = Object.fromEntries(Object.entries(filters));
 
@@ -87,13 +88,14 @@ function App() {
               baseStations={baseStations}
             ></LibreMap>
             {/* Floating components */}
-            {/*<FilterList onFilterSubmit={fetchAnomalies} />*/}
+            {/* <FilterList onFilterSubmit={fetchAnomalies} />*/}
             <MapControls />
             <ShipInfo />
+            <BackToAnomalyGroupButton />
           </LayerContext.Provider>
         </shipInfoContext.Provider>
         {/* <SettingsBar />*/}
-        {/*<SideBar responseData={posts} />*/}
+        {/* <SideBar responseData={posts} />*/}
       </main>
     </>
   );
