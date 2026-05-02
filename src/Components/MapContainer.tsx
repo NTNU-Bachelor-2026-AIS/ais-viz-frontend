@@ -65,7 +65,7 @@ export const MapContainer = ({
     0, 0, 0, 0,
   ]);
   const [zoom, setZoom] = useState<number>(0);
-  const context = useContext(LayerContext);
+  const activeVis = useContext(LayerContext);
   const [activeLayers, setActiveLayers] = useState<any[]>([]);
   const [selectedMMSI, setSelectedMMSi] = useState<string>("");
   const [selectedAnomalyId, setSelectedAnomalyId] = useState<string>("");
@@ -137,8 +137,7 @@ Useeffect looking at activevis and changing visualization based on its value, us
     if (!mapRef.current || !shipInfoContextValue || !deckOverlayRef.current)
       return;
 
-    if (context?.activeVis === "clustering" && clusterIndex) {
-      setSelectedMMSi("");
+    if (activeVis?.activeVis === "clustering" && clusterIndex) {
       setSelectedAnomalyId("");
       let clusters = getClusters(zoom, bounds, clusterIndex) ?? [];
       setActiveLayers([
@@ -146,29 +145,28 @@ Useeffect looking at activevis and changing visualization based on its value, us
         LabeledclusteredScatterPlotLayer(
           { clusters },
           shipInfoContextValue.setShipInfoProps,
-          context.setActiveVis,
+          activeVis.setActiveVis,
         ),
       ]);
-    } else if (context?.activeVis === "heatmap" && responseData) {
+    } else if (activeVis?.activeVis === "heatmap" && responseData) {
       setSelectedAnomalyId("");
       setActiveLayers([
         heatMapLayer({ responseData }),
         BaseStationIconLayer({ baseStations }),
       ]);
-    } else if (context?.activeVis === "anomalyGroup") {
-      setSelectedAnomalyId("");
+    } else if (activeVis?.activeVis === "anomalyGroup") {
       setSelectedMMSi(getMmsiClick());
-    } else if (context?.activeVis === "individualAnomaly") {
+    } else if (activeVis?.activeVis === "individualAnomaly") {
       setSelectedAnomalyId(getIdClick());
     }
   }, [
     bounds,
     zoom,
-    context,
+    activeVis,
     clusterIndex,
     responseData,
     overLayReady,
-    context?.activeVis,
+    activeVis?.activeVis,
   ]);
 
   /*
