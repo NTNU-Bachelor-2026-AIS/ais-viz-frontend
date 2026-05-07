@@ -156,10 +156,6 @@ export const anomalyGroupScatterPlotLayer = async (
     widthMaxPixels: 10,
     opacity: 0.5,
     rounded: true,
-    getTargetPosition: (d: any) => {
-      return coords.get(d.properties.sourceId) ?? ([0, 0] as [number, number]);
-    },
-    getWidth: 12,
     pickable: true,
   });
 

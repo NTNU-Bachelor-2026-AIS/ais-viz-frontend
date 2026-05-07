@@ -81,29 +81,29 @@ function App() {
       />
       */}
 
-      <main className="content-area">
         {/* Map Component */}
         <shipInfoContext.Provider value={{ shipInfoProps, setShipInfoProps }}>
           <LayerContext.Provider value={{ activeVis, setActiveVis }}>
+            <main className="content-area">
             <div className="map-container">
             <LibreMap
               responseData={posts}
               shipInfoContextValue={shipInfoContextValue}
               baseStations={baseStations}
             ></LibreMap>
-            </div>
+            
             {/* Floating components */}
             <MapControls />
-            
             <FilterList onFilterSubmit={fetchAnomalies} />
-            
             <ShipInfo />
             <BackToAnomalyGroupButton />
+            </div>
+            <SideBar responseData={posts} />
+            </main>
           </LayerContext.Provider>
         </shipInfoContext.Provider>
         {/* <SettingsBar />*/}
         <SideBar responseData={posts} />
-      </main>
     </>
   );
 }
