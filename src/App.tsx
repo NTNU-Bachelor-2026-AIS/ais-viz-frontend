@@ -91,7 +91,9 @@ function App() {
               shipInfoContextValue={shipInfoContextValue}
               baseStations={baseStations}
             ></LibreMap>
+            </div>
             
+            <div className="map-overlay">
             {/* Floating components */}
             <MapControls />
             <FilterList onFilterSubmit={fetchAnomalies} />
