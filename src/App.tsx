@@ -73,29 +73,36 @@ function App() {
 
   return (
     <>
+    {/*
       <Header
         logo={{
           url: "/",
         }}
       />
+      */}
+
       <main className="content-area">
         {/* Map Component */}
         <shipInfoContext.Provider value={{ shipInfoProps, setShipInfoProps }}>
           <LayerContext.Provider value={{ activeVis, setActiveVis }}>
+            <div className="map-container">
             <LibreMap
               responseData={posts}
               shipInfoContextValue={shipInfoContextValue}
               baseStations={baseStations}
             ></LibreMap>
+            </div>
             {/* Floating components */}
-            {/* <FilterList onFilterSubmit={fetchAnomalies} />*/}
             <MapControls />
+            
+            <FilterList onFilterSubmit={fetchAnomalies} />
+            
             <ShipInfo />
             <BackToAnomalyGroupButton />
           </LayerContext.Provider>
         </shipInfoContext.Provider>
         {/* <SettingsBar />*/}
-        {/* <SideBar responseData={posts} />*/}
+        <SideBar responseData={posts} />
       </main>
     </>
   );

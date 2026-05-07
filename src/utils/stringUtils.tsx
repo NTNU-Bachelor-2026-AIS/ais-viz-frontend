@@ -1,0 +1,1 @@
+// To Time into proper readable strings. Also turn cordinate into latitude longitude.
