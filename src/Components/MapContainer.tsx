@@ -103,6 +103,7 @@ export const MapContainer = ({
   useEffect(() => {
     if (!mapRef.current) return;
     mapRef.current.on("load", () => {
+      mapRef.current?.resize();
       deckOverlayRef.current = new MapboxOverlay({
         interleaved: false,
       });
@@ -185,7 +186,7 @@ Useeffect responsible for creating a layer when use selects mmsi.
         );
 
         let nextLayers = [
-          layer,
+          ...layer,
           BaseStationIconLayer({ baseStations }),
           SatteliteStationIconLayer(activeSattelitePoint),
         ];

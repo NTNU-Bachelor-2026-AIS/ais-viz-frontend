@@ -169,7 +169,7 @@ export const anomalyGroupScatterPlotLayer = async (
       if (activeSatellitePoint) {
         return [activeSatellitePoint.longitude, activeSatellitePoint.latitude];
       }
-      //return coords.get(d.properties.sourceId) ?? ([0, 0] as [number, number]);
+      return [0, 0] as [number, number];
     },
     getWidth: 4,
     widthScale: 2,
