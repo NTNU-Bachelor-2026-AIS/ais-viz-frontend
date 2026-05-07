@@ -102,8 +102,6 @@ function App() {
             </main>
           </LayerContext.Provider>
         </shipInfoContext.Provider>
-        {/* <SettingsBar />*/}
-        <SideBar responseData={posts} />
     </>
   );
 }
