@@ -25,7 +25,7 @@ export const SideBar = ({ responseData }: sideBarProps) => {
   > | null>(null);
 
   const [filterList, setFilterList] = useState<FeatureCollection<Point>>();
-
+  const [isOpen, setIsOpen] = useState<boolean>();
   const [dropDownSelect, setDropDownSelect] =
     useState<SearchType>("ANOMALYTYPE");
 
@@ -63,6 +63,12 @@ export const SideBar = ({ responseData }: sideBarProps) => {
   };
 
   return (
+
+    <div className={`sidebar-container ${isOpen ? "open" : ""}`}>
+      {/* Using props as classname it can have two css styles */}
+      {/* Not used because of time restraints */}
+      <div className="sidebar-toggle" onClick={() => setIsOpen(!isOpen)}>
+      </div>
     <aside className="boat-sidebar">
       {/* Search Bar */}
       <div className="search-container">
@@ -117,5 +123,6 @@ export const SideBar = ({ responseData }: sideBarProps) => {
           ))}
       </div>
     </aside>
+    </div>
   );
 };
