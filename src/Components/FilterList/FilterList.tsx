@@ -15,6 +15,8 @@ interface Props {
 }
 
 export const FilterList = ({ onFilterSubmit }: Props) => {
+    const [isOpen, setIsOpen] = useState(false);
+
     const [mmsi, setMmsi] = useState("");
     const [type, setType] = useState("");
     const [startDate, setStartDate] = useState("");
@@ -27,6 +29,7 @@ export const FilterList = ({ onFilterSubmit }: Props) => {
         startDate: startDate,
         endDate: endDate,
         });
+        setIsOpen(false);
     };
 
   return (
