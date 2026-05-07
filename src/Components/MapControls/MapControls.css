@@ -2,7 +2,7 @@
 
 /* Ensures position and makes sure container is above the map */
 .mapcontrols-container {
-  position: fixed;
+  position: absolute;
   top: 10px;
   left: 10px;
   z-index: 1000; 
