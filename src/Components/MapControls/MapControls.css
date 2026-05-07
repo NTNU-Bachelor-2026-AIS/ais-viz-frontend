@@ -2,29 +2,31 @@
 
 /* Ensures position and makes sure container is above the map */
 .mapcontrols-container {
-  position: absolute;
-  left: 30px;
-  left: 0%;
-  transform: translateX(50%);
+  position: fixed;
+  top: 10px;
+  left: 10px;
   z-index: 1000; 
+  background-color: white;
+  border: 2px solid black;
+  padding: 10px;
 }
 
 .select-section {
   display: flex;
-  gap: 8px;
-  padding: 8px 0px;
+  align-items: center;
+  gap: 10px;
 }
 
 .label {
   font-size: 1rem;
   font-weight: 500;
-  margin-bottom: 5 px;
   color: var(--color-navy);
 }
 
 .select {
-  width: '100%';
-  padding: '5px';
+  padding: 5px;
+  border: 1px solid black;
+  background: white;
   color: var(--color-navy);
 }
 
