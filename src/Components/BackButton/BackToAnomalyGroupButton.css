@@ -1,7 +1,9 @@
 .back-button {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  bottom: 10px;
+  left: 130px;
   transform: translate(-50%, -50%);
   z-index: 1000;
+  background-color: rgb(87, 189, 223);
+  padding: 10px;
 }
