@@ -64,10 +64,6 @@ const IndividualAnomalyInfo = () => {
           Ship name:{" "}
           {individualAnomaly?.individualAnomalyProps?.vesselName}{" "}
         </h3>
-
-        <p className="ship-description">
-          Ship name: {individualAnomaly?.individualAnomalyProps?.vesselName}
-        </p>
         <p>
           <strong>Ships location: </strong>{" "}
           {individualAnomaly?.individualAnomalyProps?.location}
