@@ -6,7 +6,7 @@ import type {
   Geometry,
 } from "geojson";
 import type { Point } from "geojson";
-import React from "react";
+import React, { type Dispatch, type SetStateAction } from "react";
 import { DeckGL } from "@deck.gl/react/typed";
 import { IconLayer } from "@deck.gl/layers/typed";
 // import type { PickingInfo } from "@deck.gl/core/typed";
@@ -15,11 +15,15 @@ import { feature, featureCollection } from "@turf/turf";
 import type { isAnyArrayBuffer } from "node:util/types";
 import { getAnomalyGroupByMMSI, getAnomalyPointsById } from "../api/posts";
 import { type AnyProps } from "supercluster";
-import { mapBaseStationToCoords } from "../utils/MapInteractionUtils";
+import {
+  mapBaseStationToCoords,
+  setIndividualAnomalyInfoOnClick,
+} from "../utils/MapInteractionUtils";
 import { signalStrengthGradient } from "../utils/ColorGradientUtils";
 import type { SatellitePoint } from "../utils/timeUtils";
 
 import baseStationIconUrl from "../Icons/BaseStation.svg";
+import type { IndividualAnomalyInfoProps } from "./IndividualAnomalyInfo/IndividualAnomalyInfo";
 
 /*
 File responsible for creating DeckGlLayers that are not clustered. 
@@ -183,10 +187,15 @@ export const anomalyGroupScatterPlotLayer = async (
   return [anomalyGroupLayer, signalStrengthLayer, satteliteLayer];
 };
 
-export const individualAnomalyLayer = async (id: string, zoom: number) => {
+export const individualAnomalyLayer = async (
+  id: string,
+  zoom: number,
+  setIndividualAnomalyInfo: Dispatch<
+    SetStateAction<IndividualAnomalyInfoProps | undefined>
+  >,
+) => {
   const anomalyData = await getAnomalyPointsById(id);
-  console.log("anomalydata features " + anomalyData?.features);
-  const features = anomalyData?.features;
+
   const anomalyGroupLayer = new ScatterplotLayer<any>({
     id: "scatterPlotLayer",
     data: anomalyData?.features,
@@ -198,6 +207,14 @@ export const individualAnomalyLayer = async (id: string, zoom: number) => {
     getLineWidth: 10,
     radiusScale: 60,
     pickable: true,
+
+    onClick: (info) => {
+      const pickedObject = info.object;
+      if (!pickedObject) return;
+      console.log("HERE IS THE ERROR ", pickedObject.properties);
+      console.log("individual anomalyliayre clicked");
+      setIndividualAnomalyInfoOnClick(setIndividualAnomalyInfo, pickedObject);
+    },
   });
 
   return anomalyGroupLayer;

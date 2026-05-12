@@ -6,6 +6,7 @@ import { getBaseStations } from "../api/posts";
 // For sattelites
 import { getClosestSatellitePoint } from "./timeUtils";
 import satelliteDataJson from "../data/satellite_24h.json";
+import type { IndividualAnomalyInfoProps } from "../Components/IndividualAnomalyInfo/IndividualAnomalyInfo";
 
 type setShipInfoType = Dispatch<SetStateAction<ShipInfoProps | undefined>>;
 export const setShipInfoOnClick = (
@@ -16,9 +17,28 @@ export const setShipInfoOnClick = (
     id: info?.properties.id,
     lastActivityAt: info?.properties.lastActivityAt,
     mmsi: info?.properties.mmsi,
-    startedAt: info?.properties.startedAt,
+    startedAt: info?.properties.startedAt.toLocaleString(),
     anomalyType: info?.properties.type,
-    location: info.geometry?.coordinates,
+    location: `${"latitude " + info.geometry?.coordinates[1].toFixed(2)}, ${" longitude " + info.geometry?.coordinates[0].toFixed(2)}`,
+  });
+};
+
+type setIndividualAnomalyInfo = Dispatch<
+  SetStateAction<IndividualAnomalyInfoProps | undefined>
+>;
+export const setIndividualAnomalyInfoOnClick = (
+  setIndividualAnomalyInfo: setIndividualAnomalyInfo,
+  info: any,
+) => {
+  console.log("infofofofo", info);
+  setIndividualAnomalyInfo({
+    vesselName: info.properties?.metadata?.staticReport?.vesselName,
+    imoNumber: info.properties?.metadata?.staticReport?.imoNumber,
+    mmsi: info.properties?.metadata?.staticReport?.mmsi,
+    destination: info.properties?.metadata?.staticReport?.destination,
+    sourceId: info.properties?.metadata?.staticReport?.sourceId,
+    signalStrength: info.properties?.signalStrength,
+    location: `${"latitude " + info.geometry?.coordinates[1].toFixed(2)}, ${" longitude " + info.geometry?.coordinates[0].toFixed(2)}`,
   });
 };
 

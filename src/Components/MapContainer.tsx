@@ -31,6 +31,7 @@ import {
   individualAnomalyLayer,
 } from "./DeckLayers.tsx";
 import { getAnomalyGroupByMMSI } from "../api/posts.tsx";
+import { individualAnomalyContext } from "./IndividualAnomalyInfo/InvidiualAnomalyContext.tsx";
 
 /*
  MapContainer is the file responsible for handling the maplibre instance, creating it and handling its layers based on other files. 
@@ -69,6 +70,7 @@ export const MapContainer = ({
   const [activeLayers, setActiveLayers] = useState<any[]>([]);
   const [selectedMMSI, setSelectedMMSi] = useState<string>("");
   const [selectedAnomalyId, setSelectedAnomalyId] = useState<string>("");
+  const individualAnomaly = useContext(individualAnomalyContext);
 
   // Only when a ship is clicked is it updated
   const activeSattelitePoint = useMemo(() => {
@@ -201,18 +203,22 @@ Useeffect responsible for creating a layer when use selects mmsi.
   useEffect(() => {
     //  console.log("selectedmmsi useffect called ");
     if (!deckOverlayRef.current) return;
+    if (!individualAnomaly?.setIndividualAnomalyProps) return;
 
-    let layer: any;
     if (selectedAnomalyId != "") {
       const loadLayer = async () => {
-        const layer = await individualAnomalyLayer(getIdClick(), zoom);
+        const layer = await individualAnomalyLayer(
+          getIdClick(),
+          zoom,
+          individualAnomaly.setIndividualAnomalyProps,
+        );
 
         setActiveLayers([BaseStationIconLayer({ baseStations }), layer]);
       };
 
       loadLayer();
     }
-  }, [selectedAnomalyId, zoom]);
+  }, [selectedAnomalyId, zoom, individualAnomaly?.setIndividualAnomalyProps]);
 
   /*
 useeffect for changing active layer based on activelayers variable. 
