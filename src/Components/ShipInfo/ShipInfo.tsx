@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import "./ShipInfo.css";
 import { shipInfoContext } from "./ShipInfoContext.tsx";
 import { LayerContext } from "../../utils/activeVisContext.tsx";
+import { formatReadableTime } from "../../utils/timeUtils"
 
 // Interface for shipinfo.
 export interface ShipInfoProps {
@@ -78,11 +79,11 @@ const ShipInfo = () => {
             </p>
             <p>
               <strong>Anomaly started at : </strong>{" "}
-              {shipInfo?.shipInfoProps?.startedAt}
+              {formatReadableTime(shipInfo?.shipInfoProps?.startedAt)}
             </p>
             <p>
               <strong>Ships last activity at: </strong>{" "}
-              {shipInfo?.shipInfoProps?.lastActivityAt}
+              {formatReadableTime(shipInfo?.shipInfoProps?.lastActivityAt)}
             </p>
           </div>
 
