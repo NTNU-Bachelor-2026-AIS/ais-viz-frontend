@@ -31,3 +31,8 @@ export const getClosestSatellitePoint = (
     return points[index];
 };
 
+export const formatReadableTime = (iso: string) =>
+  iso ? new Date(iso).toLocaleString() : "";
+
+export const toBackendDateTime = (local: string) =>
+  local ? new Date(local).toISOString() : "";
