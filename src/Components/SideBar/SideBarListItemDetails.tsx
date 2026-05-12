@@ -4,6 +4,7 @@ import type {
   GeoJsonProperties,
   Point,
 } from "geojson";
+import { formatReadableTime } from "../../utils/timeUtils"
 
 /*
 SidebarListItemDetails is used in sidebar when clicking an anomaly group to show details of that group as this component.
@@ -20,23 +21,28 @@ export const SideBarListItemDetails = ({
 }: SideBarListItemDetailsProps) => {
   return (
     <div className="item-details">
+      {/* 
       <p>
         <strong>ID:</strong> {feature.properties?.id}
       </p>
+      */}
       <p>
         <strong>Mmsi:</strong> {feature.properties?.mmsi}
       </p>
       <p>
         <strong>Type:</strong> {feature.properties?.type}
       </p>
+      
       <p>
-        <strong>coordinates:</strong> {feature.geometry.coordinates.toString()}
+        <strong>coordinates:</strong> {" "} 
+          latitude {feature.geometry.coordinates[1].toFixed(2)},
+          longitude {feature.geometry.coordinates[0].toFixed(2)}
       </p>
       <p>
-        <strong>started at:</strong> {feature.properties?.startedAt}
+        <strong>started at:</strong> {formatReadableTime(feature.properties?.startedAt)}
       </p>
       <p>
-        <strong>last activity at:</strong> {feature.properties?.lastActivityAt}
+        <strong>last activity at:</strong> {formatReadableTime(feature.properties?.lastActivityAt)}
       </p>
     </div>
   );

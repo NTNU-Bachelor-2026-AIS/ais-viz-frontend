@@ -86,8 +86,10 @@ export const SideBar = ({ responseData }: sideBarProps) => {
         //  onClick={() => handleItemClick(feature)}
       >
         <span className="boat-id">ID : {feature.properties?.id},</span>
+        {/* 
         <span className="boat-mmsi"> MMSI: {feature.properties?.mmsi}</span>
         <span className="anomaly-type"> : {feature.properties?.type}</span>
+        */}
         {feature.properties?.id ? (
           <SideBarListItemDetails feature={feature} />
         ) : null}{" "}
@@ -128,7 +130,7 @@ export const SideBar = ({ responseData }: sideBarProps) => {
 
       {/* Scrollable Content Section */}
       <List
-        height={500}
+        height={window.innerHeight - 140}
         width="100%"
         itemSize={200}
         itemCount={filterList?.features.length ?? 0}
