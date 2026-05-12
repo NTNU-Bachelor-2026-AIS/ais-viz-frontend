@@ -13,13 +13,19 @@ import { getFilteredAnomalies } from "./api/posts";
 import { FilterList } from "./Components/FilterList/FilterList";
 import { LayerContext } from "./utils/activeVisContext";
 import { BackToAnomalyGroupButton } from "./Components/BackButton/BackToAnomalyClusterButton";
-
+import type { IndividualAnomalyInfoProps } from "./IndividualAnomalyInfo";
+import { individualAnomalyContext } from "./Components/IndividualAnomalyInfo/InvidiualAnomalyContext";
+import IndividualAnomalyInfo from "./Components/IndividualAnomalyInfo/IndividualAnomalyInfo";
 /* root component of the app
  */
 function App() {
   const [shipInfoProps, setShipInfoProps] = useState<ShipInfoProps | undefined>(
     undefined,
   );
+
+  const [individualAnomalyProps, setIndividualAnomalyProps] = useState<
+    IndividualAnomalyInfoProps | undefined
+  >(undefined);
 
   const [posts, setposts] = useState<FeatureCollection<Point>>({
     type: "FeatureCollection",
@@ -73,7 +79,7 @@ function App() {
 
   return (
     <>
-    {/*
+      {/*
       <Header
         logo={{
           url: "/",
@@ -81,29 +87,37 @@ function App() {
       />
       */}
 
-        {/* Map Component */}
+      {/* Map Component */}
+      <individualAnomalyContext.Provider
+        value={{
+          individualAnomalyProps,
+          setIndividualAnomalyProps,
+        }}
+      >
         <shipInfoContext.Provider value={{ shipInfoProps, setShipInfoProps }}>
           <LayerContext.Provider value={{ activeVis, setActiveVis }}>
             <main className="content-area">
-            <div className="map-container">
-            <LibreMap
-              responseData={posts}
-              shipInfoContextValue={shipInfoContextValue}
-              baseStations={baseStations}
-            ></LibreMap>
-            </div>
-            
-            <div className="map-overlay">
-            {/* Floating components */}
-            <MapControls />
-            <FilterList onFilterSubmit={fetchAnomalies} />
-            <ShipInfo />
-            <BackToAnomalyGroupButton />
-            </div>
-            <SideBar responseData={posts} />
+              <div className="map-container">
+                <LibreMap
+                  responseData={posts}
+                  shipInfoContextValue={shipInfoContextValue}
+                  baseStations={baseStations}
+                ></LibreMap>
+              </div>
+
+              <div className="map-overlay">
+                {/* Floating components */}
+                <MapControls />
+                <IndividualAnomalyInfo />
+                <FilterList onFilterSubmit={fetchAnomalies} />
+                <ShipInfo />
+                <BackToAnomalyGroupButton />
+              </div>
+              <SideBar responseData={posts} />
             </main>
           </LayerContext.Provider>
         </shipInfoContext.Provider>
+      </individualAnomalyContext.Provider>
     </>
   );
 }

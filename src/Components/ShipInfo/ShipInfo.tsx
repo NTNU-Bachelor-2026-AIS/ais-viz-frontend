@@ -61,14 +61,13 @@ const ShipInfo = () => {
 
         {/* Scrollable Content Section */}
         <div className="card-content">
-          <h2 className="ship-title">
-            Id: {shipInfo?.shipInfoProps?.id} Mmsi:{" "}
-            {shipInfo?.shipInfoProps?.mmsi}{" "}
-          </h2>
-          <h3 className="ship-subtitle">Lorem shipsum</h3>
+          <h2 className="ship-title">Mmsi: {shipInfo?.shipInfoProps?.mmsi} </h2>
+          <h3 className="ship-subtitle">
+            Anomaly Group: {shipInfo?.shipInfoProps?.id}{" "}
+          </h3>
 
           <p className="ship-description">
-            This ship sent AIS message at coordinate{" "}
+            This anomaly group sent AIS message at coordinate{" "}
             {shipInfo?.shipInfoProps?.location}.
           </p>
 
