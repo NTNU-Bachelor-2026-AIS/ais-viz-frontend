@@ -8,6 +8,7 @@ import type {
 } from "geojson";
 import type { Point } from "geojson";
 import { getFilteredAnomalies } from "../../api/posts";
+import { toBackendDateTime } from "../../utils/timeUtils"
 
 
 interface Props {
@@ -26,8 +27,8 @@ export const FilterList = ({ onFilterSubmit }: Props) => {
     onFilterSubmit({
         type: type,
         mmsi: mmsi,
-        startDate: startDate,
-        endDate: endDate,
+        startDate:  toBackendDateTime(startDate),
+        endDate:  toBackendDateTime(endDate),
         });
         setIsOpen(false);
     };
@@ -50,13 +51,13 @@ export const FilterList = ({ onFilterSubmit }: Props) => {
             />
 
             <input
-                type="date"
+                type="datetime-local"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
             />
 
             <input
-                type="date"
+                type="datetime-local"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
             />
