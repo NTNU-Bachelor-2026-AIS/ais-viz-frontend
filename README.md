@@ -18,6 +18,7 @@ The applictaion allows users to:
 - Deck.gl
 - MapLibre GL
 - Node.js / npm
+- Docker backend database
 
 ## Prerequisites
 
@@ -27,7 +28,6 @@ Make sure you have installed:
 - npm
 - Docker (required for backend)
 - VS code is recommended (optional)
-- 
 
 ## Getting Started
 
