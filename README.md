@@ -1,12 +1,17 @@
 # AIS Anomaly Visualization Frontend
 
-This repository contains the frontend for the AIS anomaly visualization system.  
-It is built using React + TypeScript and visualizes anomalies using deck.gl and maplibre.
-This project was developed using Visual Studio Code, but the setup can be performed in any terminal.
+ About the Project
 
----
+This project visualizes anomaly-data through libraries such as maplibre, as base map, and deck.gl as the main visualization library. it is built in react + typescript.
 
-## 🧰 Tech Stack
+The applictaion allows users to:
+- Visualize anomaly clusters on a map
+- Switch between different visualization modes.
+- Inspect anomaly groups and individual anomaly details
+- View signal strength relationships between vessels and base stations/satellites 
+- Filter and search anomalies.
+
+## Tech Stack
 
 - React (TypeScript)
 - Vite
@@ -14,9 +19,7 @@ This project was developed using Visual Studio Code, but the setup can be perfor
 - MapLibre GL
 - Node.js / npm
 
----
-
-## 📦 Prerequisites
+## Prerequisites
 
 Make sure you have installed:
 
@@ -24,10 +27,9 @@ Make sure you have installed:
 - npm
 - Docker (required for backend)
 - VS code is recommended (optional)
+- 
 
----
-
-## 🚀 Getting Started
+## Getting Started
 
 ### 1. Clone the repository
 
