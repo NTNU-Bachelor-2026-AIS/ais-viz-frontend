@@ -24,10 +24,10 @@ The applictaion allows users to:
 
 Make sure you have installed:
 
-- Node.js 
-- npm
-- Docker (required for backend)
-- VS code is recommended (optional)
+- Node.js (https://nodejs.org/en)
+- npm (https://nodejs.org/en/download) npm comes installed with Node.js
+- Docker and docker compose (required for backend), links : (https://docs.docker.com/engine/install/), (https://docs.docker.com/compose/install/)
+- VS code is recommended (optional), link: (https://code.visualstudio.com/download)
 
 ## Getting Started
 
