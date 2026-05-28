@@ -35,6 +35,6 @@ Make sure you have installed:
 
 ### 3. Run the backend docker container, you will need to follow the guide on https://github.com/NTNU-Bachelor-2026-AIS/ais-viz-backend
 
-### 4. With the backend running, and dependencies installed, the project can be run through the command in terminal ```npm.cmd run dev``` then one can open http://localhost:5173/](http://localhost:5173/ais-viz-frontend in a web broweser to access the website. 
+### 4. With the backend running, and dependencies installed, the project can be run through the command in terminal ```npm.cmd run dev``` then one can open http://localhost:5173/ais-viz-frontend in a web broweser to access the website. 
 
 
