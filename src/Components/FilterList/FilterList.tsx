@@ -11,8 +11,14 @@ import { getFilteredAnomalies } from "../../api/posts";
 import { toBackendDateTime } from "../../utils/timeUtils"
 
 
+
+/**
+ * FilterList Is a UI component that allows filtering based on mmsi, type, start date and end date 
+ * it calls the apply filter method on button click. 
+ * */
+
 interface Props {
-    onFilterSubmit: (filters: { mmsi: string, type: string, startDate: string, endDate:string }) => void;
+    onFilterSubmit: (filters: { mmsi: string, type: string,  start_date: string, end_date:string }) => void;
 }
 
 export const FilterList = ({ onFilterSubmit }: Props) => {
@@ -27,8 +33,8 @@ export const FilterList = ({ onFilterSubmit }: Props) => {
     onFilterSubmit({
         type: type,
         mmsi: mmsi,
-        startDate:  toBackendDateTime(startDate),
-        endDate:  toBackendDateTime(endDate),
+        start_date:  toBackendDateTime(startDate),
+        end_date:  toBackendDateTime(endDate),
         });
         setIsOpen(false);
     };

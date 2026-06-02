@@ -31,8 +31,11 @@ export const getClosestSatellitePoint = (
     return points[index];
 };
 
+
+// Formats time string into human readable format. 
 export const formatReadableTime = (iso: string) =>
   iso ? new Date(iso).toLocaleString() : "";
 
+//converts string to iso format. 
 export const toBackendDateTime = (local: string) =>
   local ? new Date(local).toISOString() : "";

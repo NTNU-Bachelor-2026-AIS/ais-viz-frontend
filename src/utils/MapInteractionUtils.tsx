@@ -8,6 +8,11 @@ import { getClosestSatellitePoint } from "./timeUtils";
 import satelliteDataJson from "../data/satellite_24h.json";
 import type { IndividualAnomalyInfoProps } from "../Components/IndividualAnomalyInfo/IndividualAnomalyInfo";
 
+
+
+/**
+ * Method that receives a state setter of setShipInfo, and updates its properties. 
+ */
 type setShipInfoType = Dispatch<SetStateAction<ShipInfoProps | undefined>>;
 export const setShipInfoOnClick = (
   setShipInfo: setShipInfoType,
@@ -23,6 +28,10 @@ export const setShipInfoOnClick = (
   });
 };
 
+
+/**
+ * Method that receives a state setter of individual anomaly info props and updates its properties. 
+ */
 type setIndividualAnomalyInfo = Dispatch<
   SetStateAction<IndividualAnomalyInfoProps | undefined>
 >;

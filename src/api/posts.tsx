@@ -110,6 +110,10 @@ export const getIndividualAnomalyGroup = async (
   }
 };
 
+
+/*
+  Method that makes api call to master query. returning a promise of a FeatureCollection. 
+*/
 export const getFilteredAnomalies = async (params: {
   start_date?: string;
   end_date?: string;

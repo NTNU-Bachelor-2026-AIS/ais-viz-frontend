@@ -15,7 +15,7 @@ export interface IndividualAnomalyInfoProps {
 }
 
 /*
-ShipInfo component that will be a card to show information on ship and location when pressing its anomaly group. 
+Individual anomaly info component that will be a card to show information on a singular ship and location.  based on shipinfo component. 
 */
 const IndividualAnomalyInfo = () => {
   const individualAnomaly = useContext(individualAnomalyContext);

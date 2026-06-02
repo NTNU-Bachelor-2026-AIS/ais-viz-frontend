@@ -2,7 +2,9 @@ import { Settings, Calendar, Filter } from 'lucide-react';
 import './SettingsBar.css';
 
 
-
+/**
+ * Settings bar UI component, currently unused.
+ */
 function SettingsBar() {
   return (
     <div className="settings-container">
