@@ -12,7 +12,7 @@ import { shipInfoContext } from "./Components/ShipInfo/ShipInfoContext";
 import { getFilteredAnomalies } from "./api/posts";
 import { FilterList } from "./Components/FilterList/FilterList";
 import { LayerContext } from "./utils/activeVisContext";
-import { BackToAnomalyGroupButton } from "./Components/BackButton/BackToAnomalyClusterButton";
+import { BackToAnomalyClusterButton } from "./Components/BackButton/BackToAnomalyClusterButton";
 import type { IndividualAnomalyInfoProps } from "./IndividualAnomalyInfo";
 import { individualAnomalyContext } from "./Components/IndividualAnomalyInfo/InvidiualAnomalyContext";
 import IndividualAnomalyInfo from "./Components/IndividualAnomalyInfo/IndividualAnomalyInfo";
@@ -111,7 +111,7 @@ function App() {
                 <IndividualAnomalyInfo />
                 <FilterList onFilterSubmit={fetchAnomalies} />
                 <ShipInfo />
-                <BackToAnomalyGroupButton />
+                <BackToAnomalyClusterButton />
               </div>
               <SideBar responseData={posts} />
             </main>

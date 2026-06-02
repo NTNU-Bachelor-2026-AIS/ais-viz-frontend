@@ -1,13 +1,13 @@
 import { useContext } from "react";
 import { LayerContext } from "../../utils/activeVisContext";
-import "./BackToAnomalyGroupButton.css";
+import "./BackToAnomalyClusterButton.css";
 
 // Interface for shipinfo.
 
 /*
 ShipInfo component that will be a card to show information on ship and location when pressing its anomaly group. 
 */
-export const BackToAnomalyGroupButton = () => {
+export const BackToAnomalyClusterButton = () => {
   const visContext = useContext(LayerContext);
 
   if (visContext?.activeVis !== "individualAnomaly") return null;
@@ -18,7 +18,7 @@ export const BackToAnomalyGroupButton = () => {
         visContext?.setActiveVis("clustering");
       }}
     >
-      Go back to anomaly group
+      Go back to clustered view
     </button>
   );
 };
