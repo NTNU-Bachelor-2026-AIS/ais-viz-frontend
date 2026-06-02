@@ -1,73 +1,42 @@
-# React + TypeScript + Vite
+# AIS Anomaly Visualization Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+ About the Project
 
-Currently, two official plugins are available:
+This project visualizes anomaly-data through libraries such as maplibre, as base map, and deck.gl as the main visualization library. it is built in react + typescript.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+The applictaion allows users to:
+- Visualize anomaly clusters on a map
+- Switch between different visualization modes.
+- Inspect anomaly groups and individual anomaly details
+- View signal strength relationships between vessels and base stations/satellites 
+- Filter and search anomalies.
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React (TypeScript)
+- Vite
+- Deck.gl
+- MapLibre GL
+- Node.js / npm
+- Docker backend database
 
-## Expanding the ESLint configuration
+## Prerequisites
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Make sure you have installed:
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Node.js (https://nodejs.org/en)
+- npm (https://nodejs.org/en/download) npm comes installed with Node.js
+- Docker and docker compose (required for backend), links : (https://docs.docker.com/engine/install/), (https://docs.docker.com/compose/install/)
+- VS code is recommended (optional), link: (https://code.visualstudio.com/download)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Getting Started
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### 1. Clone the repository
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2.Navigate to the project root directory and install the required dependencies, it is recommended to open the project in visual studio code, or if not open a terminal in the root directory and run ```"npm install" ```
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### 3. Run the backend docker container, you will need to follow the guide on https://github.com/NTNU-Bachelor-2026-AIS/ais-viz-backend
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### 4. With the backend running, and dependencies installed, the project can be run through the command in terminal ```npm.cmd run dev``` then one can open http://localhost:5173/ais-viz-frontend in a web broweser to access the website. 
+
+
