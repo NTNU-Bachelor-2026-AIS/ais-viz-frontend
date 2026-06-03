@@ -39,4 +39,6 @@ Make sure you have installed:
 
 ### 4. With the backend running, and dependencies installed, the project can be run through the command in terminal ```npm.cmd run dev``` then one can open http://localhost:5173/ais-viz-frontend in a web broweser to access the website. 
 
+### 5. Firefox does not seem to handle the date range feature well, but other browsers such as mirosoft edge work fine with it.
+
 [![Demo Video](https://img.youtube.com/vi/uwBdPU44GcQ/0.jpg)](https://youtu.be/uwBdPU44GcQ)
